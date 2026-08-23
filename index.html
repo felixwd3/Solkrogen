@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solkrogen - Booking & Huskeliste</title>
+    <style>
+        :root {
+            --color-lene: #e9ecef; /* Lys grå */
+            --color-erik: #e2d9f3; /* Lys lilla */
+            --color-anne: #d1e7dd; /* Lys grøn */
+            --border-lene: #6c757d;
+            --border-erik: #6f42c1;
+            --border-anne: #198754;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #212529;
+            --primary: #0d6efd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px 20px 80px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
+        }
+
+        /* Kalender Gitter Styling */
+        .month-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #495057;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 20px;
+        }
+
+        .cal-header-day {
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #6c757d;
+            padding-bottom: 5px;
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .owner-lene { background-color: var(--color-lene); border-color: var(--border-lene); color: #333; }
+        .owner-erik { background-color: var(--color-erik); border-color: var(--border-erik); color: #333; }
+        .owner-anne { background-color: var(--color-anne); border-color: var(--border-anne); color: #333; }
+        .cal-day.empty { background: none; border: none; cursor: default; }
+
+        .day-number { font-weight: bold; }
+        .day-owner { font-size: 0.6rem; opacity: 0.8; }
+
+        /* Farveforkleking */
+        .legend {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+        .legend-box { width: 12px; height: 12px; border-radius: 3px; }
+
+        /* Tjekliste styling */
+        .checklist-category {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #495057;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 5px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
+        .checklist-item input {
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .checklist-item.completed span {
+            text-decoration: line-through;
+            color: #adb5bd;
+        }
+
+        /* Bundnavigation */
+        .nav-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            border-top: 1px solid #dee2e6;
+            z-index: 50;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #6c757d;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        /* Modal / Booking formular */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: flex-end;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px 20px 0 0;
+            padding: 25px;
+            box-sizing: border-box;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #495057;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 10px 0;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-book { background-color: var(--primary); }
+        .btn-request { background-color: #ffc107; color: #000; }
+        .btn-close { background-color: #e9ecef; color: #495057; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- KALENDER VIEW -->
+        <div id="calendarView" class="view-section active">
+            <h1>Solkrogen</h1>
+            <p class="subtitle">Vælg datoer for ophold</p>
+
+            <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 20px;">+ Opret booking / lån</button>
+
+            <div class="month-title">September 2026</div>
+            <div class="legend">
+                <div class="legend-item"><div class="legend-box" style="background:var(--color-erik); border:1px solid var(--border-erik)"></div>Erik</div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--color-anne); border:1px solid var(--border-anne)"></div>Anne</div>
+                <div class="legend-item"><div class="legend-box" style="background:var(--color-lene); border:1px solid var(--border-lene)"></div>Lene</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <!-- TJEKLISTE VIEW -->
+        <div id="checklistView" class="view-section">
+            <h1>Huskeliste</h1>
+            <p class="subtitle">Manual til Store Solkrog</p>
+
+            <div class="checklist-category">Når man forlader huset</div>
+            <div id="departureList"></div>
+
+            <div class="checklist-category">Vinterlukning</div>
+            <div id="winterList"></div>
+        </div>
+
+    </div>
+
+    <!-- BUNDNAVIGATION -->
+    <div class="nav-bar">
+        <button class="nav-item active" onclick="switchView('calendar', this)">
+            📅 Kalender
+        </button>
+        <button class="nav-item" onclick="switchView('checklist', this)">
+            ☑️ Huskeliste
+        </button>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <h3>Opret booking eller lån</h3>
+            
+            <label for="userName">Dit navn:</label>
+            <input type="text" id="userName" placeholder="F.eks. Felix">
+
+            <label for="startDate">Fra dato:</label>
+            <input type="date" id="startDate" value="2026-09-01" onchange="checkBookingType()">
+
+            <label for="endDate">Til dato:</label>
+            <input type="date" id="endDate" value="2026-09-07" onchange="checkBookingType()">
+
+            <p id="bookingNotice" style="font-size: 0.85rem; color: #666; background: #f1f3f5; padding: 10px; border-radius: 6px; margin-top: 10px;"></p>
+
+            <button id="actionBtn" class="btn btn-book" onclick="submitBooking()">Bekræft booking</button>
+            <button class="btn btn-close" onclick="closeModal()">Annuller</button>
+        </div>
+    </div>
+
+    <script>
+        // Definition af hvem der "ejer" hver dag i september 2026 (til demo)
+        // 1-6: Erik, 7-20: Anne, 21-30: Lene
+        function getOwnerForDay(day) {
+            if (day >= 1 && day <= 6) return { name: "Erik", class: "owner-erik" };
+            if (day >= 7 && day <= 20) return { name: "Anne", class: "owner-anne" };
+            return { name: "Lene", class: "owner-lene" };
+        }
+
+        const myBranch = "Lene"; // Du tilhører Lenes gren
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            let html = `
+                <div class="cal-header-day">Man</div>
+                <div class="cal-header-day">Tirs</div>
+                <div class="cal-header-day">Ons</div>
+                <div class="cal-header-day">Tors</div>
+                <div class="cal-header-day">Fre</div>
+                <div class="cal-header-day">Lør</div>
+                <div class="cal-header-day">Søn</div>
+            `;
+
+            // 1. september 2026 er en tirsdag -> 1 tom boks før mandag? Nej, tirsdag betyder 1 tom plads i mandags-startet gitter
+            html += `<div class="cal-day empty"></div>`; // Mandag d. 31. aug (eller tom for mandag d. 1. sep hvis tirsdag)
+            // Faktisk: 1. sep 2026 er tirsdag. Så 1 tom plads foran.
+            
+            for (let day = 1; day <= 30; day++) {
+                const ownerInfo = getOwnerForDay(day);
+                html += `
+                    <div class="cal-day ${ownerInfo.class}" onclick="openModalWithDate(2026, 9, ${day})">
+                        <span class="day-number">${day}</span>
+                        <span class="day-owner">${ownerInfo.name}</span>
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        // Tjeklister
+        const departureTasks = [
+            "Skru ned for vandvarmer til minimum (5 grader)",
+            "Sluk al strøm undtagen el-varme og vandvarmer",
+            "Tjek værelsesradiatorer: Tryk P (skal vise CF, ellers brug piltaster)",
+            "Køleskabe (hus + skur): Slukkes, afrimes, gøres rent og efterlades med viskestykke i klemte dør",
+            "Køkken/bad: Efterlad kaffe, te, olie, salt, peber, køkkenrulle, toiletpapir, sæbe m.m.",
+            "Brændeovn: Fyld kurven med brænde og tøm askeskuffen (hvis sikkert)",
+            "Vinduer (inkl. hems) lukkes, og tre luftventiler stilles på ca. 5 mm",
+            "Skabe i værelser/under vask og døre til alle rum efterlades åbne",
+            "Terrassedør låses med nøgle, og alle skure låses",
+            "Vand til Store Solkrog lukkes i brønden (rør ikke Lille Solkrog) samt hovedhane før måler",
+            "Betal for opholdet (husk at skrive navn på indbetaler)",
+            "🧹 Gulvvask med natursæbe \"hvid\""
+        ];
+
+        const winterTasks = [
+            "Frostsikring: Fjern boremaskine, batterimaskiner og malervarer fra skur til hems",
+            "El-radiatorer fra hems stilles i karnap og ved terrassegavl, tilsluttes el-varme stikkontakter (* og 1)",
+            "Tjek radiatorer i værelser: Tryk på P (skal vise CF)"
+        ];
+
+        function renderChecklists() {
+            document.getElementById('departureList').innerHTML = departureTasks.map((task, i) => `
+                <label class="checklist-item" id="dep-${i}">
+                    <input type="checkbox" onchange="toggleTask('dep-${i}')"><span>${task}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('winterList').innerHTML = winterTasks.map((task, i) => `
+                <label class="checklist-item" id="win-${i}">
+                    <input type="checkbox" onchange="toggleTask('win-${i}')"><span>${task}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleTask(id) {
+            const el = document.getElementById(id);
+            if (el.querySelector('input').checked) el.classList.add('completed');
+            else el.classList.remove('completed');
+        }
+
+        function switchView(name, btn) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(name + 'View').classList.add('active');
+            btn.classList.add('active');
+        }
+
+        function openModal() {
+            document.getElementById('bookingModal').style.display = 'flex';
+            checkBookingType();
+        }
+
+        function openModalWithDate(year, month, day) {
+            const formattedMonth = String(month).padStart(2, '0');
+            const formattedDay = String(day).padStart(2, '0');
+            document.getElementById('startDate').value = `${year}-${formattedMonth}-${formattedDay}`;
+            document.getElementById('endDate').value = `${year}-${formattedMonth}-${String(day+2).padStart(2, '0')}`;
+            openModal();
+        }
+
+        function closeModal() {
+            document.getElementById('bookingModal').style.display = 'none';
+        }
+
+        // Dynamisk tjek af om perioden krydser ind over andre grene
+        function checkBookingType() {
+            const start = new Date(document.getElementById('startDate').value);
+            const end = new Date(document.getElementById('endDate').value);
+            const notice = document.getElementById('bookingNotice');
+            const btn = document.getElementById('actionBtn');
+
+            // Simpel logik: Hvis perioden rører ved dage, der ikke er Lenes (dvs. dag 1-20 i september), kræves anmodning
+            let crossesOther = false;
+            let current = new Date(start);
+            while(current <= end) {
+                if(current.getMonth() === 8) { // September
+                    const day = current.getDate();
+                    if(day <= 20) crossesOther = true; // Erik eller Anne ejer d. 1-20
+                }
+                current.setDate(current.getDate() + 1);
+            }
+
+            if(crossesOther) {
+                notice.innerHTML = "⚠️ Denne periode overlapper med en anden grens uger. Der sendes automatisk en anmodning om lån.";
+                btn.innerText = "Send anmodning";
+                btn.className = "btn btn-request";
+            } else {
+                notice.innerHTML = "✅ Perioden ligger i din egen grens uger. Bookes med det samme.";
+                btn.innerText = "Bekræft booking";
+                btn.className = "btn btn-book";
+            }
+        }
+
+        function submitBooking() {
+            const name = document.getElementById('userName').value;
+            if(!name) { alert("Indtast venligst dit navn."); return; }
+            
+            alert(`Registreret for ${name}! Tak for din handling.`);
+            closeModal();
+            document.getElementById('userName').value = '';
+        }
+
+        renderCalendar();
+        renderChecklists();
+    </script>
+</body>
+</html>
