@@ -613,7 +613,6 @@
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
-            // Tilføj den nye booking til listen
             const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate };
             const updatedBookings = [...existingBookings, newBooking];
 
@@ -622,7 +621,8 @@
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': API_KEY
+                        'X-Master-Key': API_KEY,
+                        'X-Bin-Versioning': 'false'
                     },
                     body: JSON.stringify({ bookings: updatedBookings })
                 });
@@ -631,7 +631,7 @@
                     alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
                     closeModal();
                     document.getElementById('userName').value = '';
-                    fetchBookings(); // Opdater kalenderen med det samme
+                    fetchBookings();
                 } else {
                     alert("Kunne ikke gemme bookingen.");
                 }
