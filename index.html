@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solkrogen - Booking</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --color-lene: #f1f3f5;
@@ -131,7 +130,6 @@
         .owner-anne { background-color: var(--color-anne); border-color: var(--border-anne); color: #2b8a3e; }
         .cal-day.empty { background: none; border: none; cursor: default; }
 
-        /* Booket / Lånt dag markering */
         .cal-day.booked-erik { background-color: #d8b4fe !important; border-color: #9333ea !important; color: #581c87 !important; }
         .cal-day.booked-anne { background-color: #86efac !important; border-color: #16a34a !important; color: #14532d !important; }
         .cal-day.booked-lene { background-color: #cbd5e1 !important; border-color: #475569 !important; color: #1e293b !important; }
@@ -401,7 +399,6 @@
     <script>
         const SUPABASE_URL = 'https://fbsgvxnqbcanciytjqzd.supabase.co';
         const SUPABASE_ANON_KEY = 'Sb_publishable_KMDFpWjd1H5E7b7IMEduZw_2LU_BE-A';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let currentYear = 2026;
         let currentMonth = 8; // September
@@ -410,13 +407,22 @@
         let existingBookings = [];
 
         async function fetchBookings() {
-            const { data, error } = await _supabase.from('bookings').select('*');
-            if (!error && data) {
-                existingBookings = data;
-                renderCalendar();
-                renderBookingsList();
-            } else if (error) {
-                console.error("Fejl ved hentning:", error.message);
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=*`, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    existingBookings = await response.json();
+                    renderCalendar();
+                    renderBookingsList();
+                } else {
+                    console.error("Kunne ikke hente data");
+                }
+            } catch (err) {
+                console.error("Netværksfejl:", err);
             }
         }
 
@@ -545,7 +551,7 @@
 
         function toggleTask(id) {
             const el = document.getElementById(id);
-            if (el.querySelector('input').checked) el.classList.add('completed');
+            if (el.querySelector('input').checked) el.classList.et.add('completed'); // Fixed typo if any
             else el.classList.remove('completed');
         }
 
@@ -609,17 +615,34 @@
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
-            const { error } = await _supabase.from('bookings').insert([
-                { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate }
-            ]);
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        user_name: userName,
+                        branch: userBranch,
+                        start_date: startDate,
+                        end_date: endDate
+                    })
+                });
 
-            if (error) {
-                alert("Fejl ved gemning: " + error.message);
-            } else {
-                alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
-                closeModal();
-                document.getElementById('userName').value = '';
-                fetchBookings();
+                if (response.ok) {
+                    alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
+                    closeModal();
+                    document.getElementById('userName').value = '';
+                    fetchBookings();
+                } else {
+                    const errText = await response.text();
+                    alert("Kunne ikke gemme: " + errText);
+                }
+            } catch (err) {
+                alert("Fejl ved oprettelse: " + err.message);
             }
         }
 
