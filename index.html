@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solkrogen - Booking</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --color-lene: #f1f3f5;
@@ -69,7 +70,6 @@
             display: block;
         }
 
-        /* Månedsskifter */
         .month-nav {
             display: flex;
             justify-content: space-between;
@@ -131,8 +131,13 @@
         .owner-anne { background-color: var(--color-anne); border-color: var(--border-anne); color: #2b8a3e; }
         .cal-day.empty { background: none; border: none; cursor: default; }
 
+        /* Booket / Lånt dag markering */
+        .cal-day.booked-erik { background-color: #d8b4fe !important; border-color: #9333ea !important; color: #581c87 !important; }
+        .cal-day.booked-anne { background-color: #86efac !important; border-color: #16a34a !important; color: #14532d !important; }
+        .cal-day.booked-lene { background-color: #cbd5e1 !important; border-color: #475569 !important; color: #1e293b !important; }
+
         .day-number { font-size: 0.9rem; }
-        .day-owner { font-size: 0.50rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
+        .day-owner { font-size: 0.50rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-align: center; }
 
         .legend {
             display: flex;
@@ -147,6 +152,22 @@
         }
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-box { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* Liste over aktive bookinger */
+        .bookings-list-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 20px 0 10px 0;
+            color: #343a40;
+        }
+        .booking-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+        }
 
         .checklist-category {
             font-size: 1rem;
@@ -263,7 +284,7 @@
             letter-spacing: 0.5px;
         }
 
-        input[type="text"], input[type="date"] {
+        input[type="text"], input[type="date"], select {
             width: 100%;
             padding: 12px;
             margin: 6px 0 4px 0;
@@ -318,6 +339,9 @@
                 </div>
 
                 <div class="calendar-grid" id="calendarGrid"></div>
+
+                <div class="bookings-list-title">Aktive bookinger i perioden</div>
+                <div id="bookingsListContainer">Henter...</div>
             </div>
 
             <!-- TJEKLISTE VIEW -->
@@ -355,6 +379,13 @@
             <label for="userName">Dit navn</label>
             <input type="text" id="userName" placeholder="F.eks. Felix">
 
+            <label for="userBranch">Hvilken gren tilhører du?</label>
+            <select id="userBranch" onchange="checkBookingType()">
+                <option value="Lene">Lenes gren</option>
+                <option value="Erik">Eriks gren</option>
+                <option value="Anne">Annes gren</option>
+            </select>
+
             <label for="startDate">Fra dato</label>
             <input type="date" id="startDate" value="2026-09-01" onchange="checkBookingType()">
 
@@ -369,26 +400,37 @@
     </div>
 
     <script>
+        const SUPABASE_URL = 'https://fbsgvxnqbcanciytjqzd.supabase.co';
+        const SUPABASE_ANON_KEY = 'CkKOyvUgqnVUnMqS';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
+        
+        let existingBookings = [];
 
-        // Rullende 2-ugers fordeling baseret på ugenummer
+        async function fetchBookings() {
+            const { data, error } = await _supabase.from('bookings').select('*');
+            if (!error && data) {
+                existingBookings = data;
+                renderCalendar();
+                renderBookingsList();
+            }
+        }
+
         function getOwnerForDate(year, month, day) {
             const d = new Date(year, month, day);
             const onejan = new Date(d.getFullYear(), 0, 1);
             const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
             
-            // Divider med 2, så hver ejer har huset i 2 uger ad gangen
             const twoWeekBlock = Math.floor((week - 1) / 2);
             const mod = twoWeekBlock % 3;
 
-            if (mod === 0) return { name: "Erik", class: "owner-erik" };
-            if (mod === 1) return { name: "Anne", class: "owner-anne" };
-            return { name: "Lene", class: "owner-lene" };
+            if (mod === 0) return { name: "Erik", branch: "Erik", class: "owner-erik" };
+            if (mod === 1) return { name: "Anne", branch: "Anne", class: "owner-anne" };
+            return { name: "Lene", branch: "Lene", class: "owner-lene" };
         }
-
-        const myBranch = "Lene";
 
         function changeMonth(direction) {
             currentMonth += direction;
@@ -400,6 +442,11 @@
                 currentYear--;
             }
             renderCalendar();
+        }
+
+        function isDateBooked(year, month, day) {
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            return existingBookings.find(b => dateStr >= b.start_date && dateStr <= b.end_date);
         }
 
         function renderCalendar() {
@@ -425,14 +472,39 @@
 
             for (let day = 1; day <= totalDays; day++) {
                 const ownerInfo = getOwnerForDate(currentYear, currentMonth, day);
+                const booking = isDateBooked(currentYear, currentMonth, day);
+                
+                let dayClass = ownerInfo.class;
+                let subText = ownerInfo.name;
+
+                if (booking) {
+                    dayClass = `booked-${booking.branch ? booking.branch.toLowerCase() : 'lene'}`;
+                    subText = booking.user_name;
+                }
+
                 html += `
-                    <div class="cal-day ${ownerInfo.class}" onclick="openModalWithDate(${currentYear}, ${currentMonth + 1}, ${day})">
+                    <div class="cal-day ${dayClass}" onclick="openModalWithDate(${currentYear}, ${currentMonth + 1}, ${day})">
                         <span class="day-number">${day}</span>
-                        <span class="day-owner">${ownerInfo.name}</span>
+                        <span class="day-owner">${subText}</span>
                     </div>
                 `;
             }
             grid.innerHTML = html;
+        }
+
+        function renderBookingsList() {
+            const container = document.getElementById('bookingsListContainer');
+            if (existingBookings.length === 0) {
+                container.innerHTML = `<div class="booking-card" style="color: #868e96;">Ingen aktive bookinger endnu.</div>`;
+                return;
+            }
+
+            container.innerHTML = existingBookings.map(b => `
+                <div class="booking-card">
+                    <strong>${b.user_name}</strong> (${b.branch || 'Ukendt gren'})<br>
+                    📅 ${b.start_date} til ${b.end_date}
+                </div>
+            `).join('');
         }
 
         const departureTasks = [
@@ -503,6 +575,7 @@
         function checkBookingType() {
             const start = new Date(document.getElementById('startDate').value);
             const end = new Date(document.getElementById('endDate').value);
+            const selectedBranch = document.getElementById('userBranch').value;
             const notice = document.getElementById('bookingNotice');
             const btn = document.getElementById('actionBtn');
 
@@ -510,7 +583,7 @@
             let current = new Date(start);
             while(current <= end) {
                 const owner = getOwnerForDate(current.getFullYear(), current.getMonth(), current.getDate());
-                if(owner.name !== myBranch) {
+                if(owner.branch !== selectedBranch) {
                     crossesOther = true;
                 }
                 current.setDate(current.getDate() + 1);
@@ -527,16 +600,29 @@
             }
         }
 
-        function submitBooking() {
-            const name = document.getElementById('userName').value;
-            if(!name) { alert("Indtast venligst dit navn."); return; }
-            
-            alert(`Registreret for ${name}! Tak for din handling.`);
-            closeModal();
-            document.getElementById('userName').value = '';
+        async function submitBooking() {
+            const userName = document.getElementById('userName').value;
+            const userBranch = document.getElementById('userBranch').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if(!userName) { alert("Indtast venligst dit navn."); return; }
+
+            const { error } = await _supabase.from('bookings').insert([
+                { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate }
+            ]);
+
+            if (error) {
+                alert("Fejl ved gemning i databasen: " + error.message + "\nHusk at oprette kolonnen 'branch' i Supabase-tabellen, hvis den ikke er der.");
+            } else {
+                alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
+                closeModal();
+                document.getElementById('userName').value = '';
+                fetchBookings();
+            }
         }
 
-        renderCalendar();
+        fetchBookings();
         renderChecklists();
     </script>
 </body>
