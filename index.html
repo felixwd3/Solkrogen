@@ -153,7 +153,6 @@
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .legend-box { width: 10px; height: 10px; border-radius: 50%; }
 
-        /* Liste over aktive bookinger */
         .bookings-list-title {
             font-size: 1rem;
             font-weight: 700;
@@ -416,6 +415,8 @@
                 existingBookings = data;
                 renderCalendar();
                 renderBookingsList();
+            } else if (error) {
+                console.error("Fejl ved hentning:", error.message);
             }
         }
 
@@ -613,7 +614,7 @@
             ]);
 
             if (error) {
-                alert("Fejl ved gemning i databasen: " + error.message + "\nHusk at oprette kolonnen 'branch' i Supabase-tabellen, hvis den ikke er der.");
+                alert("Fejl ved gemning: " + error.message);
             } else {
                 alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
                 closeModal();
