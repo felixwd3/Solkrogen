@@ -397,8 +397,8 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://fbsgvxnqbcanciytjqzd.supabase.co';
-        const SUPABASE_ANON_KEY = 'Sb_publishable_KMDFpWjd1H5E7b7IMEduZw_2LU_BE-A';
+        const BIN_ID = '6a8b3802da38895dfe078cde';
+        const API_KEY = '$2a$10$Fnez76ikCxVXis2i6rH4c.v8TTTuBeLGhLf1hLI4jqYfhButui57';
 
         let currentYear = 2026;
         let currentMonth = 8; // September
@@ -408,21 +408,19 @@
 
         async function fetchBookings() {
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings?select=*`, {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
                     headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        'X-Master-Key': API_KEY
                     }
                 });
                 if (response.ok) {
-                    existingBookings = await response.json();
+                    const json = await response.json();
+                    existingBookings = json.record.bookings || [];
                     renderCalendar();
                     renderBookingsList();
-                } else {
-                    console.error("Kunne ikke hente data");
                 }
             } catch (err) {
-                console.error("Netværksfejl:", err);
+                console.error("Kunne ikke hente bookinger", err);
             }
         }
 
@@ -551,7 +549,7 @@
 
         function toggleTask(id) {
             const el = document.getElementById(id);
-            if (el.querySelector('input').checked) el.classList.et.add('completed'); // Fixed typo if any
+            if (el.querySelector('input').checked) el.classList.add('completed');
             else el.classList.remove('completed');
         }
 
@@ -615,31 +613,27 @@
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
+            // Tilføj den nye booking til listen
+            const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate };
+            const updatedBookings = [...existingBookings, newBooking];
+
             try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
-                    method: 'POST',
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
                     headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                         'Content-Type': 'application/json',
-                        'Prefer': 'return=minimal'
+                        'X-Master-Key': API_KEY
                     },
-                    body: JSON.stringify({
-                        user_name: userName,
-                        branch: userBranch,
-                        start_date: startDate,
-                        end_date: endDate
-                    })
+                    body: JSON.stringify({ bookings: updatedBookings })
                 });
 
                 if (response.ok) {
                     alert(`Booking gennemført for ${userName} (${userBranch}s gren)!`);
                     closeModal();
                     document.getElementById('userName').value = '';
-                    fetchBookings();
+                    fetchBookings(); // Opdater kalenderen med det samme
                 } else {
-                    const errText = await response.text();
-                    alert("Kunne ikke gemme: " + errText);
+                    alert("Kunne ikke gemme bookingen.");
                 }
             } catch (err) {
                 alert("Fejl ved oprettelse: " + err.message);
