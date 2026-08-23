@@ -38,7 +38,6 @@
             box-sizing: border-box;
         }
 
-        /* Toppbillede - Viser jeres eget luftfoto */
         .app-header-image {
             width: 100%;
             height: 180px;
@@ -70,14 +69,28 @@
             display: block;
         }
 
-        .month-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #343a40;
+        /* Månedsskifter */
+        .month-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .month-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #343a40;
+        }
+
+        .month-btn {
+            background: #f1f3f5;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #495057;
         }
 
         .calendar-grid {
@@ -119,7 +132,7 @@
         .cal-day.empty { background: none; border: none; cursor: default; }
 
         .day-number { font-size: 0.9rem; }
-        .day-owner { font-size: 0.55rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
+        .day-owner { font-size: 0.50rem; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.5px; }
 
         .legend {
             display: flex;
@@ -282,7 +295,6 @@
 
     <div class="app-container">
         
-        <!-- DET RIGTIGE LUFTFOTO AF SOLKROGEN -->
         <img src="hus.jpg" alt="Solkrogen luftfoto" class="app-header-image">
 
         <div class="app-content">
@@ -293,8 +305,10 @@
 
                 <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 24px;">+ Opret booking / anmodning</button>
 
-                <div class="month-title">
-                    <span>September 2026</span>
+                <div class="month-nav">
+                    <button class="month-btn" onclick="changeMonth(-1)">‹ Forrige</button>
+                    <div class="month-title" id="monthTitle">September 2026</div>
+                    <button class="month-btn" onclick="changeMonth(1)">Næste ›</button>
                 </div>
 
                 <div class="legend">
@@ -355,16 +369,43 @@
     </div>
 
     <script>
-        function getOwnerForDay(day) {
-            if (day >= 1 && day <= 6) return { name: "Erik", class: "owner-erik" };
-            if (day >= 7 && day <= 20) return { name: "Anne", class: "owner-anne" };
+        let currentYear = 2026;
+        let currentMonth = 8; // September
+        const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
+
+        // Rullende 2-ugers fordeling baseret på ugenummer
+        function getOwnerForDate(year, month, day) {
+            const d = new Date(year, month, day);
+            const onejan = new Date(d.getFullYear(), 0, 1);
+            const week = Math.ceil((((d - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+            
+            // Divider med 2, så hver ejer har huset i 2 uger ad gangen
+            const twoWeekBlock = Math.floor((week - 1) / 2);
+            const mod = twoWeekBlock % 3;
+
+            if (mod === 0) return { name: "Erik", class: "owner-erik" };
+            if (mod === 1) return { name: "Anne", class: "owner-anne" };
             return { name: "Lene", class: "owner-lene" };
         }
 
         const myBranch = "Lene";
 
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            } else if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            renderCalendar();
+        }
+
         function renderCalendar() {
+            document.getElementById('monthTitle').innerText = `${monthNames[currentMonth]} ${currentYear}`;
             const grid = document.getElementById('calendarGrid');
+            
             let html = `
                 <div class="cal-header-day">Man</div>
                 <div class="cal-header-day">Tirs</div>
@@ -375,12 +416,17 @@
                 <div class="cal-header-day">Søn</div>
             `;
 
-            html += `<div class="cal-day empty"></div>`;
-            
-            for (let day = 1; day <= 30; day++) {
-                const ownerInfo = getOwnerForDay(day);
+            const firstDayIndex = (new Date(currentYear, currentMonth, 1).getDay() + 6) % 7;
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                html += `<div class="cal-day empty"></div>`;
+            }
+
+            for (let day = 1; day <= totalDays; day++) {
+                const ownerInfo = getOwnerForDate(currentYear, currentMonth, day);
                 html += `
-                    <div class="cal-day ${ownerInfo.class}" onclick="openModalWithDate(2026, 9, ${day})">
+                    <div class="cal-day ${ownerInfo.class}" onclick="openModalWithDate(${currentYear}, ${currentMonth + 1}, ${day})">
                         <span class="day-number">${day}</span>
                         <span class="day-owner">${ownerInfo.name}</span>
                     </div>
@@ -446,7 +492,7 @@
             const formattedMonth = String(month).padStart(2, '0');
             const formattedDay = String(day).padStart(2, '0');
             document.getElementById('startDate').value = `${year}-${formattedMonth}-${formattedDay}`;
-            document.getElementById('endDate').value = `${year}-${formattedMonth}-${String(day+2).padStart(2, '0')}`;
+            document.getElementById('endDate').value = `${year}-${formattedMonth}-${String(Math.min(day+2, 28)).padStart(2, '0')}`;
             openModal();
         }
 
@@ -463,9 +509,9 @@
             let crossesOther = false;
             let current = new Date(start);
             while(current <= end) {
-                if(current.getMonth() === 8) {
-                    const day = current.getDate();
-                    if(day <= 20) crossesOther = true;
+                const owner = getOwnerForDate(current.getFullYear(), current.getMonth(), current.getDate());
+                if(owner.name !== myBranch) {
+                    crossesOther = true;
                 }
                 current.setDate(current.getDate() + 1);
             }
@@ -483,7 +529,7 @@
 
         function submitBooking() {
             const name = document.getElementById('userName').value;
-            if(!name) { alert("Indtast venligst tid navn."); return; }
+            if(!name) { alert("Indtast venligst dit navn."); return; }
             
             alert(`Registreret for ${name}! Tak for din handling.`);
             closeModal();
