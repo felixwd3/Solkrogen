@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solkrogen - Booking</title>
-    <!-- Gør appen installerbar (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2b8a3e">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -33,6 +32,7 @@
             padding: 20px 20px 90px 20px;
             display: flex;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .app-container {
@@ -181,7 +181,7 @@
             background: #ff8787;
             border: none;
             color: white;
-            padding: 4px 8px;
+            padding: 6px 10px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.75rem;
@@ -418,6 +418,13 @@
     </div>
 
     <script>
+        // Registrer Service Worker så mobilen godkender den som en rigtig app
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
+            });
+        }
+
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
@@ -425,8 +432,6 @@
         let existingBookings = [];
         let isCurrentRequest = false;
 
-        // Bruger localStorage til at synkronisere på enheden, 
-        // og deler via et letvægts-system så alle kan se det.
         function loadBookings() {
             try {
                 const saved = localStorage.getItem('solkrogen_bookings');
@@ -542,7 +547,7 @@
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
                     <div>
-                        ${b.status === 'request' ? `<button class="btn-book" style="padding: 4px 8px; font-size:0.75rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
+                        ${b.status === 'request' ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.75rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
                         <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
                     </div>
                 </div>
@@ -658,10 +663,10 @@
         }
 
         function submitBooking() {
-            const userName = document.getElementById('userName'].value;
-            const userBranch = document.getElementById('userBranch'].value;
+            const userName = document.getElementById('userName').value;
+            const userBranch = document.getElementById('userBranch').value;
             const startDate = document.getElementById('startDate'].value;
-            const endDate = document.getElementById('endDate'].value;
+            const endDate = document.getElementById('endDate').value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
