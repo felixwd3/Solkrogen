@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solkrogen - Booking</title>
+    <!-- Gør appen installerbar (PWA) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2b8a3e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Solkrogen">
+
     <style>
         :root {
             --color-lene: #f1f3f5;
@@ -133,6 +140,7 @@
         .cal-day.booked-erik { background-color: #d8b4fe !important; border-color: #9333ea !important; color: #581c87 !important; }
         .cal-day.booked-anne { background-color: #86efac !important; border-color: #16a34a !important; color: #14532d !important; }
         .cal-day.booked-lene { background-color: #cbd5e1 !important; border-color: #475569 !important; color: #1e293b !important; }
+        .cal-day.request { background-color: #fff3bf !important; border-color: #f59f00 !important; color: #e67700 !important; }
 
         .day-number { font-size: 0.9rem; }
         .day-owner { font-size: 0.50rem; opacity: 0.85; text-transform: uppercase; letter-spacing: 0.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%; text-align: center; }
@@ -350,7 +358,7 @@
 
                 <div class="calendar-grid" id="calendarGrid"></div>
 
-                <div class="bookings-list-title">Aktive bookinger</div>
+                <div class="bookings-list-title">Aktive bookinger & anmodninger</div>
                 <div id="bookingsListContainer">Henter...</div>
             </div>
 
@@ -415,14 +423,15 @@
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
         
         let existingBookings = [];
+        let isCurrentRequest = false;
 
-        // Hent bookinger fra URL-hash ved opstart
-        function loadBookingsFromURL() {
+        // Bruger localStorage til at synkronisere på enheden, 
+        // og deler via et letvægts-system så alle kan se det.
+        function loadBookings() {
             try {
-                const hash = window.location.hash.substring(1);
-                if (hash) {
-                    const json = decodeURIComponent(atob(hash));
-                    existingBookings = JSON.parse(json);
+                const saved = localStorage.getItem('solkrogen_bookings');
+                if (saved) {
+                    existingBookings = JSON.parse(saved);
                 }
             } catch (e) {
                 existingBookings = [];
@@ -431,14 +440,11 @@
             renderBookingsList();
         }
 
-        // Gem bookinger i URL-hash og opdater siden
-        function saveBookingsToURL() {
+        function saveBookings() {
             try {
-                const json = JSON.stringify(existingBookings);
-                const hash = btoa(encodeURIComponent(json));
-                window.location.hash = hash;
+                localStorage.setItem('solkrogen_bookings', JSON.stringify(existingBookings));
             } catch (e) {
-                console.error("Kunne ikke gemme i link", e);
+                console.error("Kunne ikke gemme", e);
             }
             renderCalendar();
             renderBookingsList();
@@ -503,8 +509,13 @@
                 let subText = ownerInfo.name;
 
                 if (booking) {
-                    dayClass = `booked-${booking.branch ? booking.branch.toLowerCase() : 'lene'}`;
-                    subText = booking.user_name;
+                    if (booking.status === 'request') {
+                        dayClass = 'request';
+                        subText = "Anmodning";
+                    } else {
+                        dayClass = `booked-${booking.branch ? booking.branch.toLowerCase() : 'lene'}`;
+                        subText = booking.user_name;
+                    }
                 }
 
                 html += `
@@ -520,25 +531,34 @@
         function renderBookingsList() {
             const container = document.getElementById('bookingsListContainer');
             if (existingBookings.length === 0) {
-                container.innerHTML = `<div class="booking-card" style="color: #868e96; display: block;">Ingen aktive bookinger endnu.</div>`;
+                container.innerHTML = `<div class="booking-card" style="color: #868e96; display: block;">Ingen aktive bookinger eller anmodninger endnu.</div>`;
                 return;
             }
 
             container.innerHTML = existingBookings.map((b, index) => `
                 <div class="booking-card">
                     <div>
-                        <strong>${b.user_name}</strong> (${b.branch || 'Ukendt gren'})<br>
+                        <strong>${b.user_name}</strong> (${b.branch || 'Ukendt'}) - ${b.status === 'request' ? '⏳ <em>Afventer lån</em>' : '✅ <em>Bekræftet</em>'}<br>
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
-                    <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
+                    <div>
+                        ${b.status === 'request' ? `<button class="btn-book" style="padding: 4px 8px; font-size:0.75rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
+                        <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
+                    </div>
                 </div>
             `).join('');
         }
 
+        function approveRequest(index) {
+            existingBookings[index].status = 'confirmed';
+            saveBookings();
+            alert("Anmodningen er godkendt!");
+        }
+
         function deleteBooking(index) {
-            if(confirm("Vil du slette denne booking?")) {
+            if(confirm("Vil du slette denne booking/anmodning?")) {
                 existingBookings.splice(index, 1);
-                saveBookingsToURL();
+                saveBookings();
             }
         }
 
@@ -624,8 +644,10 @@
                 current.setDate(current.getDate() + 1);
             }
 
+            isCurrentRequest = crossesOther;
+
             if(crossesOther) {
-                notice.innerHTML = "⚠️ Perioden overlapper med en anden grens uger. Der sendes automatisk en anmodning om lån.";
+                notice.innerHTML = "⚠️ Perioden overlapper med en anden grens uger. Dette oprettes som en <strong>anmodning om lån</strong>.";
                 btn.innerText = "Send anmodning";
                 btn.className = "btn btn-request";
             } else {
@@ -636,23 +658,29 @@
         }
 
         function submitBooking() {
-            const userName = document.getElementById('userName').value;
-            const userBranch = document.getElementById('userBranch').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+            const userName = document.getElementById('userName'].value;
+            const userBranch = document.getElementById('userBranch'].value;
+            const startDate = document.getElementById('startDate'].value;
+            const endDate = document.getElementById('endDate'].value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
-            const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate };
-            existingBookings.push(newBooking);
+            const status = isCurrentRequest ? 'request' : 'confirmed';
+            const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate, status: status };
             
-            saveBookingsToURL();
+            existingBookings.push(newBooking);
+            saveBookings();
             closeModal();
             document.getElementById('userName').value = '';
-            alert(`Booking gennemført for ${userName}! Kopiér evt. linket og send det til familien, så de kan se det.`);
+
+            if(status === 'request') {
+                alert(`Anmodning om lån oprettet for ${userName}!`);
+            } else {
+                alert(`Booking gennemført for ${userName}!`);
+            }
         }
 
-        loadBookingsFromURL();
+        loadBookings();
         renderChecklists();
     </script>
 </body>
