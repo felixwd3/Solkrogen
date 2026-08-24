@@ -418,13 +418,6 @@
     </div>
 
     <script>
-        // Registrer Service Worker så mobilen godkender den som en rigtig app
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
-            });
-        }
-
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
@@ -665,7 +658,7 @@
         function submitBooking() {
             const userName = document.getElementById('userName').value;
             const userBranch = document.getElementById('userBranch').value;
-            const startDate = document.getElementById('startDate'].value;
+            const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
