@@ -116,7 +116,7 @@
 
         .cal-day {
             aspect-ratio: 1;
-            height: 48px; /* Låser højden fast, så kalenderen ikke strækker sig */
+            height: 48px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -433,6 +433,13 @@
     </div>
 
     <script>
+        // Registrer Service Worker for PWA installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
+            });
+        }
+
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
