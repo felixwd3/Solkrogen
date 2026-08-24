@@ -285,6 +285,36 @@
             gap: 4px;
         }
 
+        /* BETALING STYLES */
+        .pay-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #495057;
+        }
+
+        .pay-box strong {
+            color: #212529;
+        }
+
+        .pay-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background-color: #0051ba; /* MobilePay blå */
+            color: white;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+            box-sizing: border-box;
+        }
+
         /* BUNDNAV */
         .nav-bar {
             position: fixed;
@@ -305,7 +335,7 @@
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #adb5bd;
             cursor: pointer;
@@ -316,8 +346,8 @@
         }
 
         .nav-item svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -448,17 +478,17 @@
                 <div class="info-card">
                     <div class="contact-item">
                         <div class="contact-info">
+                            <strong>Basta Pizza (Sandvig)</strong>
+                            <span>Lækre sprøde pizzaer</span>
+                        </div>
+                        <a href="tel:56480000" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
                             <strong>Havnegrillen</strong>
                             <span>Klassisk grillmad & is</span>
                         </div>
                         <a href="tel:11223344" class="btn-call">📞 Ring</a>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>Kroens Take-Away</strong>
-                            <span>Dagens ret & smørrebrød</span>
-                        </div>
-                        <a href="tel:22334455" class="btn-call">📞 Ring</a>
                     </div>
                     <div class="contact-item">
                         <div class="contact-info">
@@ -495,6 +525,29 @@
                 </div>
             </div>
 
+            <!-- BETALING VIEW -->
+            <div id="payView" class="view-section">
+                <h1>Betaling</h1>
+                <p class="subtitle">Afregning for ophold & forbrug</p>
+
+                <div class="pay-box">
+                    <strong>📱 MobilePay</strong><br>
+                    Betaling for ophold, el eller fællesomkostninger sendes til husets fællesnummer:<br><br>
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #2b8a3e;">#123456 (Solkrogen)</span><br>
+                    <em>Husk at skrive dit navn og datoer i kommentarfeltet!</em>
+                    
+                    <a href="https://mobilepay.dk" target="_blank" class="pay-btn">Åbn MobilePay</a>
+                </div>
+
+                <div class="pay-box">
+                    <strong>🏦 Bankoverførsel</strong><br>
+                    Ønsker du at overføre via netbank:<br>
+                    <strong>Reg. nr:</strong> 1234<br>
+                    <strong>Konto nr:</strong> 1234567890<br>
+                    Husk at mærke overførslen med navn.
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -512,6 +565,10 @@
         <button class="nav-item" onclick="switchView('info', this)">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             Info
+        </button>
+        <button class="nav-item" onclick="switchView('pay', this)">
+            <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+            Betaling
         </button>
     </div>
 
@@ -804,7 +861,6 @@
             document.getElementById('userName').value = '';
 
             if(status === 'request') {
-                // Åbner automatisk en SMS-besked med anmodningen til familien
                 const smsText = encodeURIComponent(`Hej! ${userName} har oprettet en anmodning om at låne Solkrogen i perioden ${startDate} til ${endDate}. Tjek appen for at godkende det!`);
                 window.location.href = `sms:?body=${smsText}`;
             } else {
