@@ -544,7 +544,6 @@
     </div>
 
     <script>
-        // Registrer Service Worker for PWA installation
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
@@ -805,7 +804,9 @@
             document.getElementById('userName').value = '';
 
             if(status === 'request') {
-                alert(`Anmodning om lån oprettet for ${userName}!`);
+                // Åbner automatisk en SMS-besked med anmodningen til familien
+                const smsText = encodeURIComponent(`Hej! ${userName} har oprettet en anmodning om at låne Solkrogen i perioden ${startDate} til ${endDate}. Tjek appen for at godkende det!`);
+                window.location.href = `sms:?body=${smsText}`;
             } else {
                 alert(`Booking gennemført for ${userName}!`);
             }
