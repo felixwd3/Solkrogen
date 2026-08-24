@@ -29,7 +29,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            padding: 20px 20px 90px 20px;
+            padding: 20px 20px 95px 20px;
             display: flex;
             justify-content: center;
             -webkit-tap-highlight-color: transparent;
@@ -248,6 +248,33 @@
             margin-bottom: 14px;
         }
 
+        .weather-card {
+            background: linear-gradient(135deg, #e7f5ff 0%, #d0ebff 100%);
+            border: 1px solid #a5d8ff;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .weather-info h3 {
+            margin: 0;
+            font-size: 1rem;
+            color: #1864ab;
+        }
+        .weather-info p {
+            margin: 4px 0 0 0;
+            font-size: 0.8rem;
+            color: #495057;
+        }
+        .weather-temp {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #1864ab;
+        }
+
         .contact-item {
             display: flex;
             justify-content: space-between;
@@ -285,7 +312,7 @@
             gap: 4px;
         }
 
-        /* BETALING STYLES */
+        /* BETALING & BESKEDER STYLES */
         .pay-box {
             background: #f8f9fa;
             border: 1px solid #e9ecef;
@@ -297,15 +324,11 @@
             color: #495057;
         }
 
-        .pay-box strong {
-            color: #212529;
-        }
-
         .pay-btn {
             display: block;
             width: 100%;
             text-align: center;
-            background-color: #0051ba; /* MobilePay blå */
+            background-color: #0051ba;
             color: white;
             text-decoration: none;
             padding: 12px;
@@ -313,6 +336,41 @@
             font-weight: 600;
             margin-top: 12px;
             box-sizing: border-box;
+        }
+
+        .note-card {
+            background: #fff9db;
+            border: 1px solid #ffe066;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: #495057;
+        }
+
+        .note-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            color: #e67700;
+            margin-bottom: 6px;
+        }
+
+        .note-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-share {
+            background: #2b8a3e;
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
         }
 
         /* BUNDNAV */
@@ -323,11 +381,11 @@
             transform: translateX(-50%);
             width: 100%;
             max-width: 440px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.92);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 12px 0;
+            padding: 10px 0;
             border-top: 1px solid #e9ecef;
             z-index: 50;
         }
@@ -335,19 +393,19 @@
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: #adb5bd;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
+            gap: 3px;
         }
 
         .nav-item svg {
-            width: 20px;
-            height: 20px;
+            width: 19px;
+            height: 19px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -397,7 +455,7 @@
             letter-spacing: 0.5px;
         }
 
-        input[type="text"], input[type="date"], select {
+        input[type="text"], input[type="date"], textarea, select {
             width: 100%;
             padding: 12px;
             margin: 6px 0 4px 0;
@@ -469,10 +527,30 @@
                 <div id="winterList"></div>
             </div>
 
+            <!-- BESKEDER & HITTEGODS VIEW -->
+            <div id="notesView" class="view-section">
+                <h1>Beskeder & Hittegods</h1>
+                <p class="subtitle">Fælles opslagstavle for familien</p>
+
+                <button class="btn btn-book" onclick="openNoteModal()" style="margin-bottom: 20px;">+ Ny besked / hittegods</button>
+
+                <div id="notesContainer">Henter beskeder...</div>
+            </div>
+
             <!-- INFO & FAQ VIEW -->
             <div id="infoView" class="view-section">
                 <h1>Info & Kontakt</h1>
                 <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
+
+                <!-- VEJR WIDGET FOR SANDVIG -->
+                <div class="weather-card">
+                    <div class="weather-info">
+                        <h3>🌤️ Vejret i Sandvig</h3>
+                        <p id="weatherWind">Henter vejrdata...</p>
+                        <a href="https://www.dmi.dk" target="_blank" style="font-size:0.75rem; color:#1864ab; font-weight:600; text-decoration:none;">Se DMI prognose ›</a>
+                    </div>
+                    <div class="weather-temp" id="weatherTemp">--°C</div>
+                </div>
 
                 <div class="checklist-category">Spisesteder & Take-away</div>
                 <div class="info-card">
@@ -562,6 +640,10 @@
             <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
             Huskeliste
         </button>
+        <button class="nav-item" onclick="switchView('notes', this)">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Beskeder
+        </button>
         <button class="nav-item" onclick="switchView('info', this)">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             Info
@@ -600,6 +682,29 @@
         </div>
     </div>
 
+    <!-- Note Modal -->
+    <div class="modal" id="noteModal">
+        <div class="modal-content">
+            <h3>Ny besked / hittegods</h3>
+            
+            <label for="noteAuthor">Dit navn</label>
+            <input type="text" id="noteAuthor" placeholder="F.eks. Felix">
+
+            <label for="noteType">Type</label>
+            <select id="noteType">
+                <option value="Besked">💬 Fællesbesked</option>
+                <option value="Hittegods">🎒 Hittegods (Glemt sag)</option>
+                <option value="Mangel">⚠️ Mangler i huset</option>
+            </select>
+
+            <label for="noteText">Tekst</label>
+            <textarea id="noteText" rows="3" placeholder="Skriv din besked her..."></textarea>
+
+            <button class="btn btn-book" onclick="submitNote()">Gem besked</button>
+            <button class="btn btn-close" onclick="closeNoteModal()">Annuller</button>
+        </div>
+    </div>
+
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -608,23 +713,51 @@
         }
 
         let currentYear = 2026;
-        let currentMonth = 8; // September
+        let currentMonth = 8;
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
         
         let existingBookings = [];
+        let existingNotes = [];
         let isCurrentRequest = false;
+        let canApprove = false;
 
         function loadBookings() {
             try {
-                const saved = localStorage.getItem('solkrogen_bookings');
-                if (saved) {
-                    existingBookings = JSON.parse(saved);
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('godkend') === 'ja') {
+                    canApprove = true;
                 }
+
+                const savedBookings = localStorage.getItem('solkrogen_bookings');
+                if (savedBookings) existingBookings = JSON.parse(savedBookings);
+
+                const savedNotes = localStorage.getItem('solkrogen_notes');
+                if (savedNotes) existingNotes = JSON.parse(savedNotes);
             } catch (e) {
                 existingBookings = [];
+                existingNotes = [];
             }
             renderCalendar();
             renderBookingsList();
+            renderNotes();
+            fetchWeather();
+        }
+
+        async function fetchWeather() {
+            try {
+                // Henter vejr for Sandvig/Allinge koordinater
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.2833&longitude=14.7797&current_weather=true&timezone=Europe%2FCopenhagen');
+                const data = await res.json();
+                if (data && data.current_weather) {
+                    const temp = Math.round(data.current_weather.temperature);
+                    const wind = Math.round(data.current_weather.windspeed);
+                    document.getElementById('weatherTemp').innerText = `${temp}°C`;
+                    document.getElementById('weatherWind').innerText = `Vind: ${wind} m/s`;
+                }
+            } catch(e) {
+                document.getElementById('weatherTemp').innerText = "☀️";
+                document.getElementById('weatherWind').innerText = "Vejrdata utilgængelig";
+            }
         }
 
         function saveBookings() {
@@ -635,6 +768,15 @@
             }
             renderCalendar();
             renderBookingsList();
+        }
+
+        function saveNotes() {
+            try {
+                localStorage.setItem('solkrogen_notes', JSON.stringify(existingNotes));
+            } catch (e) {
+                console.error("Kunne ikke gemme besked", e);
+            }
+            renderNotes();
         }
 
         function getOwnerForDate(year, month, day) {
@@ -729,11 +871,59 @@
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
                     <div>
-                        ${b.status === 'request' ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.75rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
+                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.75rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
                         <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function renderNotes() {
+            const container = document.getElementById('notesContainer');
+            if (existingNotes.length === 0) {
+                container.innerHTML = `<div class="pay-box" style="color: #868e96;">Ingen fællesbeskeder eller hittegods endnu.</div>`;
+                return;
+            }
+
+            container.innerHTML = existingNotes.map((n, index) => `
+                <div class="note-card">
+                    <div class="note-header">
+                        <span>${n.type === 'Hittegods' ? '🎒 Hittegods' : n.type === 'Mangel' ? '⚠️ Mangel' : '💬 Besked'} (fra ${n.author})</span>
+                    </div>
+                    <div>${n.text}</div>
+                    <div class="note-actions">
+                        <button class="btn-share" onclick="shareNoteSMS(${index})">📱 Del i tråd</button>
+                        <button class="btn-delete" onclick="deleteNote(${index})">Slet</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function shareNoteSMS(index) {
+            const n = existingNotes[index];
+            const smsText = encodeURIComponent(`Solkrogen update [${n.type}] fra ${n.author}: ${n.text}`);
+            window.location.href = `sms:?body=${smsText}`;
+        }
+
+        function submitNote() {
+            const author = document.getElementById('noteAuthor').value;
+            const type = document.getElementById('noteType').value;
+            const text = document.getElementById('noteText').value;
+
+            if(!author || !text) { alert("Udfyld venligst både navn og tekst."); return; }
+
+            existingNotes.unshift({ author, type, text });
+            saveNotes();
+            closeNoteModal();
+
+            document.getElementById('noteText').value = '';
+        }
+
+        function deleteNote(index) {
+            if(confirm("Vil du slette denne besked?")) {
+                existingNotes.splice(index, 1);
+                saveNotes();
+            }
         }
 
         function approveRequest(index) {
@@ -802,6 +992,14 @@
             checkBookingType();
         }
 
+        function openNoteModal() {
+            document.getElementById('noteModal').style.display = 'flex';
+        }
+
+        function closeNoteModal() {
+            document.getElementById('noteModal').style.display = 'none';
+        }
+
         function openModalWithDate(year, month, day) {
             const formattedMonth = String(month).padStart(2, '0');
             const formattedDay = String(day).padStart(2, '0');
@@ -861,7 +1059,10 @@
             document.getElementById('userName').value = '';
 
             if(status === 'request') {
-                const smsText = encodeURIComponent(`Hej! ${userName} har oprettet en anmodning om at låne Solkrogen i perioden ${startDate} til ${endDate}. Tjek appen for at godkende det!`);
+                const currentBaseURL = window.location.origin + window.location.pathname;
+                const approvalLink = `${currentBaseURL}?godkend=ja`;
+                
+                const smsText = encodeURIComponent(`Hej! ${userName} har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Klik her for at godkende: ${approvalLink}`);
                 window.location.href = `sms:?body=${smsText}`;
             } else {
                 alert(`Booking gennemført for ${userName}!`);
