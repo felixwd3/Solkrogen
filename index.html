@@ -464,31 +464,31 @@
                     <h3>📶 Wi-Fi & Opladning</h3>
                     <p><strong>Netværk:</strong> Solkrogen_Gæst</p>
                     <p><strong>Kode:</strong> <code>solkrogen2026</code></p>
-                    <p><strong>Elbil-opladning:</strong> Ladestik ved skuret (husk afregning via MobilePay).</p>
+                    <p><strong>Elbil-opladning:</strong> Strøm til Elroq'en eller gæsters biler via ladestik ved skuret (husk afregning via MobilePay).</p>
                 </div>
 
                 <div class="checklist-category">Spisesteder & Take-away</div>
                 <div class="info-card">
                     <div class="contact-item">
                         <div class="contact-info">
-                            <strong>Lokal Pizzeria & Grill</strong>
-                            <span>Pizza, burgere & pasta</span>
-                        </div>
-                        <a href="tel:12345678" class="btn-call">📞 Ring</a>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>Kystens Fisk & Røgeri</strong>
-                            <span>Fisk og frokosttallerkener</span>
-                        </div>
-                        <a href="tel:87654321" class="btn-call">📞 Ring</a>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>Det Lokale Bageri</strong>
-                            <span>Frisk morgenbrød & kager</span>
+                            <strong>Havnegrillen</strong>
+                            <span>Klassisk grillmad & is</span>
                         </div>
                         <a href="tel:11223344" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Kroens Take-Away</strong>
+                            <span>Dagens ret & smørrebrød</span>
+                        </div>
+                        <a href="tel:22334455" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>SuperBrugsen (Nærmeste)</strong>
+                            <span>Åbent 08-20 alle dage</span>
+                        </div>
+                        <a href="tel:33445566" class="btn-call">📞 Ring</a>
                     </div>
                 </div>
 
@@ -496,14 +496,14 @@
                 <div class="info-card">
                     <div class="contact-item">
                         <div class="contact-info">
-                            <strong>Lokal VVS & Varmeservice</strong>
+                            <strong>Kyst-VVS & Varmeservice</strong>
                             <span>Vand, varme og rørbrud</span>
                         </div>
                         <a href="tel:44332211" class="btn-call">📞 Ring</a>
                     </div>
                     <div class="contact-item">
                         <div class="contact-info">
-                            <strong>Autoriseret Elektriker</strong>
+                            <strong>Lokal El-Teknik</strong>
                             <span>El-installationer & sikringer</span>
                         </div>
                         <a href="tel:55667788" class="btn-call">📞 Ring</a>
@@ -567,6 +567,13 @@
     </div>
 
     <script>
+        // Registrer Service Worker for PWA installation
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
+            });
+        }
+
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
