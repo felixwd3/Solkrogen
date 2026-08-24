@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solkrogen - Booking</title>
+    <title>Solkrogen - Booking & Info</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2b8a3e">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -76,6 +76,7 @@
             display: block;
         }
 
+        /* KALENDER STYLES */
         .month-nav {
             display: flex;
             justify-content: space-between;
@@ -202,6 +203,7 @@
             font-size: 0.75rem;
         }
 
+        /* CHECKLISTE STYLES */
         .checklist-category {
             font-size: 1rem;
             font-weight: 700;
@@ -237,6 +239,69 @@
             color: #adb5bd;
         }
 
+        /* INFO & FAQ STYLES */
+        .info-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+
+        .info-card h3 {
+            margin: 0 0 8px 0;
+            font-size: 0.95rem;
+            color: #2b8a3e;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .info-card p {
+            margin: 4px 0;
+            font-size: 0.85rem;
+            color: #495057;
+            line-height: 1.4;
+        }
+
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .contact-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .contact-info strong {
+            display: block;
+            font-size: 0.85rem;
+            color: #212529;
+        }
+
+        .contact-info span {
+            font-size: 0.75rem;
+            color: #868e96;
+        }
+
+        .btn-call {
+            background-color: #2b8a3e;
+            color: white;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* BUNDNAV */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -256,7 +321,7 @@
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 600;
             color: #adb5bd;
             cursor: pointer;
@@ -280,6 +345,7 @@
             color: #2b8a3e;
         }
 
+        /* MODAL STYLES */
         .modal {
             display: none;
             position: fixed;
@@ -388,6 +454,70 @@
                 <div class="checklist-category">Vinterlukning</div>
                 <div id="winterList"></div>
             </div>
+
+            <!-- INFO & FAQ VIEW -->
+            <div id="infoView" class="view-section">
+                <h1>Info & Kontakt</h1>
+                <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
+
+                <div class="info-card">
+                    <h3>📶 Wi-Fi & Opladning</h3>
+                    <p><strong>Netværk:</strong> Solkrogen_Gæst</p>
+                    <p><strong>Kode:</strong> <code>solkrogen2026</code></p>
+                    <p><strong>Elbil-opladning:</strong> Ladestik ved skuret (husk afregning via MobilePay).</p>
+                </div>
+
+                <div class="checklist-category">Spisesteder & Take-away</div>
+                <div class="info-card">
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Lokal Pizzeria & Grill</strong>
+                            <span>Pizza, burgere & pasta</span>
+                        </div>
+                        <a href="tel:12345678" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Kystens Fisk & Røgeri</strong>
+                            <span>Fisk og frokosttallerkener</span>
+                        </div>
+                        <a href="tel:87654321" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Det Lokale Bageri</strong>
+                            <span>Frisk morgenbrød & kager</span>
+                        </div>
+                        <a href="tel:11223344" class="btn-call">📞 Ring</a>
+                    </div>
+                </div>
+
+                <div class="checklist-category">Håndværkere & Nødopkald</div>
+                <div class="info-card">
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Lokal VVS & Varmeservice</strong>
+                            <span>Vand, varme og rørbrud</span>
+                        </div>
+                        <a href="tel:44332211" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Autoriseret Elektriker</strong>
+                            <span>El-installationer & sikringer</span>
+                        </div>
+                        <a href="tel:55667788" class="btn-call">📞 Ring</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-info">
+                            <strong>Lægevagt / Akuthjælp</strong>
+                            <span>Uden for åbningstid</span>
+                        </div>
+                        <a href="tel:1813" class="btn-call">📞 1813</a>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -401,6 +531,10 @@
         <button class="nav-item" onclick="switchView('checklist', this)">
             <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
             Huskeliste
+        </button>
+        <button class="nav-item" onclick="switchView('info', this)">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            Info
         </button>
     </div>
 
@@ -433,13 +567,6 @@
     </div>
 
     <script>
-        // Registrer Service Worker for PWA installation
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
-            });
-        }
-
         let currentYear = 2026;
         let currentMonth = 8; // September
         const monthNames = ["Januar", "Februar", "Marts", "April", "Maj", "Juni", "Juli", "August", "September", "Oktober", "November", "December"];
