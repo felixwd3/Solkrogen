@@ -369,6 +369,7 @@
             display: block;
             width: 100%;
             text-align: center;
+            background: #0051f4; /* Klassisk MobilePay blå/lilla eller Airbnb rød - her holder vi den skarp */
             background: var(--airbnb-red);
             color: white;
             text-decoration: none;
@@ -379,6 +380,20 @@
             border: none;
             cursor: pointer;
             font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
+        }
+
+        .pay-badge {
+            display: inline-block;
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            margin: 6px 0;
+            border: 1px solid #e5e7eb;
         }
 
         .note-card {
@@ -679,10 +694,11 @@
                     </div>
                 </div>
 
-                <div class="pay-box">
-                    <strong>📱 MobilePay</strong> (40 63 33 10)<br>
-                    <span style="font-size: 0.7rem; color: var(--airbnb-gray);" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
-                    <button class="pay-btn" onclick="copyMobilePayNumber()">Kopier nummer til MobilePay</button>
+                <div class="pay-box" style="text-align: center;">
+                    <strong>📱 MobilePay</strong><br>
+                    <div class="pay-badge">40 63 33 10</div>
+                    <span style="display: block; font-size: 0.75rem; color: var(--airbnb-gray); margin-bottom: 8px;" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet</span>
+                    <button class="pay-btn" onclick="copyMobilePayNumber()">Kopier MobilePay-nummer</button>
                 </div>
 
                 <div class="pay-box">
@@ -826,7 +842,7 @@
             const number = "40633310";
             navigator.clipboard.writeText(number).then(() => {
                 const status = document.getElementById('copyStatus');
-                status.innerText = "✅ Nummer 40633310 er kopieret!";
+                status.innerText = "✅ Nummer 40633310 er kopieret! Åbn MobilePay.";
                 status.style.color = "#16a34a";
                 status.style.fontWeight = "700";
             }).catch(err => {
