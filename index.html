@@ -369,7 +369,6 @@
             display: block;
             width: 100%;
             text-align: center;
-            background: #0051f4; /* Klassisk MobilePay blå/lilla eller Airbnb rød - her holder vi den skarp */
             background: var(--airbnb-red);
             color: white;
             text-decoration: none;
@@ -380,7 +379,6 @@
             border: none;
             cursor: pointer;
             font-size: 0.9rem;
-            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
         }
 
         .pay-badge {
@@ -606,6 +604,13 @@
                 <h1>Om boligen</h1>
                 <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
 
+                <!-- INSTALLER APP SEKTION -->
+                <div id="installBox" class="pay-box" style="display: none; background: #fff1f2; border-color: #fecdd3; text-align: center;">
+                    <strong style="color: #9f1239; font-size: 0.9rem;">📲 Installer Solkrogen-appen</strong>
+                    <p style="font-size: 0.75rem; color: #4b5563; margin: 6px 0 12px 0;">Få hurtig adgang direkte fra din startskærm uden browser-linjer.</p>
+                    <button class="pay-btn" id="installBtn" style="background: var(--airbnb-red); margin-top: 0;">Installer på startskærm</button>
+                </div>
+
                 <div class="weather-card">
                     <div class="weather-info">
                         <h3>🌤️ Vejret i Allinge / Sankås</h3>
@@ -787,6 +792,25 @@
     </div>
 
     <script>
+        // PWA Installation Logik
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installBox').style.display = 'block';
+        });
+
+        document.getElementById('installBtn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    document.getElementById('installBox').style.display = 'none';
+                }
+                deferredPrompt = null;
+            }
+        });
+
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
