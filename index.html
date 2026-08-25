@@ -294,6 +294,23 @@
             margin-right: 4px;
         }
 
+        .btn-secondary {
+            background: #f3f4f6;
+            border: 1px solid var(--airbnb-border);
+            color: var(--airbnb-dark);
+            padding: 10px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            width: 100%;
+            margin-bottom: 12px;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
         /* CHECKLISTE & INFO STYLES */
         .checklist-category {
             font-size: 0.9rem;
@@ -683,7 +700,8 @@
                 <h1>Kalender</h1>
                 <p class="subtitle">Oversigt over uger og bookinger</p>
 
-                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 16px;">+ Opret booking / anmodning</button>
+                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 12px;">+ Opret booking / anmodning</button>
+                <button class="btn-secondary" onclick="exportICal()">📥 Eksporter kalender (iCal)</button>
 
                 <div class="month-nav">
                     <button class="month-btn" onclick="changeMonth(-1)">‹ Forrige</button>
@@ -701,6 +719,9 @@
 
                 <div class="bookings-list-title">Aktive bookinger & anmodninger</div>
                 <div id="bookingsListContainer">Henter fælles kalender...</div>
+
+                <div class="bookings-list-title" style="margin-top: 24px;">📊 Historik over bookinger i år</div>
+                <div id="historyContainer">Henter historik...</div>
             </div>
 
             <!-- TJEKLISTE VIEW -->
@@ -933,7 +954,6 @@
         let isCurrentRequest = false;
         let canApprove = false;
 
-        // Dine rigtige JSONBin.io oplysninger
         const BIN_ID = "6a8ded98f5f4af5e29418956"; 
         const MASTER_KEY = "$2a$10$CHoW6gL7DD0kvn0Xf0IPRO2p6j26vhr3onNpc3BfxzavlZFAoF4Ty";
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -951,7 +971,6 @@
                     canApprove = true;
                 }
 
-                // Hent fra din JSONBin-database
                 const res = await fetch(API_URL + "/latest", {
                     headers: { "X-Master-Key": MASTER_KEY }
                 });
@@ -967,6 +986,7 @@
             }
             renderCalendar();
             renderBookingsList();
+            renderHistory();
             renderNotes();
             fetchWeather();
             calculatePrice();
@@ -974,7 +994,6 @@
 
         async function saveDataToCloud() {
             try {
-                // Gem i din JSONBin-database
                 await fetch(API_URL, {
                     method: 'PUT',
                     headers: {
@@ -988,7 +1007,38 @@
             }
             renderCalendar();
             renderBookingsList();
+            renderHistory();
             renderNotes();
+        }
+
+        // Automatisk live-opdatering hvert 30. sekund
+        setInterval(() => {
+            loadData();
+        }, 30000);
+
+        function exportICal() {
+            let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Solkrogen//Booking Kalender//DA\n";
+            existingBookings.forEach(b => {
+                if(b.status === 'confirmed') {
+                    const start = b.start_date.replace(/-/g, '');
+                    const end = b.end_date.replace(/-/g, '');
+                    icsContent += "BEGIN:VEVENT\n";
+                    icsContent += `SUMMARY:Solkrogen - ${b.user_name} (${b.branch})\n`;
+                    icsContent += `DTSTART;VALUE=DATE:${start}\n`;
+                    icsContent += `DTEND;VALUE=DATE:${end}\n`;
+                    icsContent += "END:VEVENT\n";
+                }
+            });
+            icsContent += "END:VCALENDAR";
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'solkrogen-kalender.ics';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
         }
 
         function calculatePrice() {
@@ -1146,6 +1196,25 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyContainer');
+            const confirmed = existingBookings.filter(b => b.status === 'confirmed');
+            if (confirmed.length === 0) {
+                container.innerHTML = `<div class="booking-card" style="color: var(--airbnb-gray); display: block;">Ingen gennemførte ophold registreret endnu.</div>`;
+                return;
+            }
+
+            container.innerHTML = confirmed.map(b => `
+                <div class="booking-card" style="background: #fcfcfc;">
+                    <div>
+                        <strong>🏠 ${b.user_name}</strong> (${b.branch} familie)<br>
+                        <span style="color: var(--airbnb-gray); font-size: 0.75rem;">📅 ${b.start_date} til ${b.end_date}</span>
+                    </div>
+                    <div style="font-size: 0.75rem; font-weight: 700; color: #16a34a;">Afholdt</div>
+                </div>
+            `).join('');
         }
 
         function renderNotes() {
