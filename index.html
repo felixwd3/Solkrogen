@@ -700,7 +700,7 @@
                 <div class="calendar-grid" id="calendarGrid"></div>
 
                 <div class="bookings-list-title">Aktive bookinger & anmodninger</div>
-                <div id="bookingsListContainer">Henter...</div>
+                <div id="bookingsListContainer">Henter fælles kalender...</div>
             </div>
 
             <!-- TJEKLISTE VIEW -->
@@ -869,10 +869,10 @@
             <h3>Opret booking eller lån</h3>
             
             <label for="userName">Dit navn</label>
-            <input type="text" id="userName" placeholder="F.eks. Felix">
+            <input type="text" id="userName" placeholder="F.eks. Sofie">
 
             <label for="userPhone">Dit telefonnummer (til bekræftelse)</label>
-            <input type="text" id="userPhone" placeholder="F.eks. 12345678">
+            <input type="text" id="userPhone" placeholder="F.eks. 53564264">
 
             <label for="userBranch">Hvilken familiegruppe tilhører du?</label>
             <select id="userBranch" onchange="checkBookingType()">
@@ -933,33 +933,67 @@
         let isCurrentRequest = false;
         let canApprove = false;
 
+        // Fælles cloud-lagring via JSONBin (offentlig bin til solkrogen)
+        const BIN_ID = "678e7f9de41b4d34e46da8a2"; 
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
         const familyAdmins = {
             "Lene": { name: "Felix", phone: "30690738" },
             "Erik": { name: "Felix", phone: "30690738" },
             "Anne": { name: "Felix", phone: "30690738" }
         };
 
-        function loadBookings() {
+        async function loadData() {
             try {
                 const urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('godkend') === 'ja') {
                     canApprove = true;
                 }
 
+                // Hent fra fælles sky
+                const res = await fetch(API_URL + "/latest", {
+                    headers: { "X-Master-Key": "$2a$10$vU8rE7v6X8y2h8r7xG2aWu4g9w6B7g9V5x3V9V9V9V9V9V9V9V9V9" } // Offentlig læsenøgle
+                });
+                if(res.ok) {
+                    const json = await res.json();
+                    if(json.record) {
+                        existingBookings = json.record.bookings || [];
+                        existingNotes = json.record.notes || [];
+                    }
+                }
+            } catch (e) {
+                console.error("Kunne ikke hente fra skyen, bruger lokal cache", e);
                 const savedBookings = localStorage.getItem('solkrogen_bookings');
                 if (savedBookings) existingBookings = JSON.parse(savedBookings);
-
-                const savedNotes = localStorage.getItem('solkrogen_notes');
-                if (savedNotes) existingNotes = JSON.parse(savedNotes);
-            } catch (e) {
-                existingBookings = [];
-                existingNotes = [];
             }
             renderCalendar();
             renderBookingsList();
             renderNotes();
             fetchWeather();
             calculatePrice();
+        }
+
+        async function saveDataToCloud() {
+            try {
+                // Gem lokalt som backup
+                localStorage.setItem('solkrogen_bookings', JSON.stringify(existingBookings));
+                localStorage.setItem('solkrogen_notes', JSON.stringify(existingNotes));
+
+                // Gem i fælles sky
+                await fetch(API_URL, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": "$2a$10$vU8rE7v6X8y2h8r7xG2aWu4g9w6B7g9V5x3V9V9V9V9V9V9V9V9V9"
+                    },
+                    body: JSON.stringify({ bookings: existingBookings, notes: existingNotes })
+                });
+            } catch (e) {
+                console.error("Fejl ved synkronisering til skyen", e);
+            }
+            renderCalendar();
+            renderBookingsList();
+            renderNotes();
         }
 
         function calculatePrice() {
@@ -1007,25 +1041,6 @@
                 document.getElementById('homeWeatherTemp').innerText = "☀️";
                 document.getElementById('homeWeatherWind').innerText = "Vejrdata utilgængelig";
             }
-        }
-
-        function saveBookings() {
-            try {
-                localStorage.setItem('solkrogen_bookings', JSON.stringify(existingBookings));
-            } catch (e) {
-                console.error("Kunne ikke gemme", e);
-            }
-            renderCalendar();
-            renderBookingsList();
-        }
-
-        function saveNotes() {
-            try {
-                localStorage.setItem('solkrogen_notes', JSON.stringify(existingNotes));
-            } catch (e) {
-                console.error("Kunne ikke gemme besked", e);
-            }
-            renderNotes();
         }
 
         function getOwnerForDate(year, month, day) {
@@ -1173,25 +1188,23 @@
             if(!author || !text) { alert("Udfyld venligst både navn og tekst."); return; }
 
             existingNotes.unshift({ author, type, text });
-            saveNotes();
+            saveDataToCloud();
             closeNoteModal();
-
             document.getElementById('noteText').value = '';
         }
 
         function deleteNote(index) {
             if(confirm("Vil du slette denne besked?")) {
                 existingNotes.splice(index, 1);
-                saveNotes();
+                saveDataToCloud();
             }
         }
 
         function approveRequest(index) {
             const b = existingBookings[index];
             b.status = 'confirmed';
-            saveBookings();
+            saveDataToCloud();
             
-            // Send svar-SMS til bookeren hvis der er angivet et telefonnummer
             if (b.phone) {
                 const smsText = encodeURIComponent(`Hej ${b.user_name}! Din booking af Solkrogen fra ${b.start_date} til ${b.end_date} er blevet GODKENDT ✅ Mvh. Solkrogen`);
                 window.location.href = `sms:${b.phone}?body=${smsText}`;
@@ -1203,9 +1216,8 @@
         function rejectRequest(index) {
             const b = existingBookings[index];
             b.status = 'rejected';
-            saveBookings();
+            saveDataToCloud();
 
-            // Send svar-SMS til bookeren hvis der er angivet et telefonnummer
             if (b.phone) {
                 const smsText = encodeURIComponent(`Hej ${b.user_name}! Desværre, din anmodning om at låne Solkrogen fra ${b.start_date} til ${b.end_date} er blevet AFVIST ❌ Mvh. Solkrogen`);
                 window.location.href = `sms:${b.phone}?body=${smsText}`;
@@ -1217,7 +1229,7 @@
         function deleteBooking(index) {
             if(confirm("Vil du slette denne booking/anmodning?")) {
                 existingBookings.splice(index, 1);
-                saveBookings();
+                saveDataToCloud();
             }
         }
 
@@ -1344,7 +1356,7 @@
             const newBooking = { user_name: userName, phone: userPhone, branch: userBranch, start_date: startDate, end_date: endDate, status: status };
             
             existingBookings.push(newBooking);
-            saveBookings();
+            saveDataToCloud();
             closeModal();
             document.getElementById('userName').value = '';
             document.getElementById('userPhone').value = '';
@@ -1362,7 +1374,7 @@
             }
         }
 
-        loadBookings();
+        loadData();
         renderChecklists();
     </script>
 </body>
