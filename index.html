@@ -5,28 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Solkrogen - Booking & Info</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1a5c32">
+    <meta name="theme-color" content="#FF385C">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Solkrogen">
 
     <style>
         :root {
-            --color-lene: #f8f9fa;
+            --airbnb-red: #FF385C;
+            --airbnb-dark: #222222;
+            --airbnb-gray: #717171;
+            --airbnb-light: #f7f7f7;
+            --airbnb-border: #dddddd;
+            --color-lene: #f1f3f5;
             --color-erik: #f3f0ff;
             --color-anne: #ebfbee;
-            --border-lene: #cbd5e1;
-            --border-erik: #d8b4fe;
-            --border-anne: #86efac;
-            --bg-color: #0f172a;
-            --text-color: #0f172a;
-            --primary: #1a5c32;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: #ffffff;
-            color: var(--text-color);
+            background-color: #f0f2f5;
+            color: var(--airbnb-dark);
             margin: 0;
             padding: 0;
             display: flex;
@@ -42,280 +41,269 @@
             max-width: 440px;
             height: 100%;
             background: #ffffff;
-            border-radius: 0;
-            box-shadow: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            border: none;
+            position: relative;
         }
 
         .app-header-container {
             position: relative;
             flex-shrink: 0;
-            border-bottom: 1px solid #e2e8f0;
         }
 
         .app-header-image {
             width: 100%;
-            height: 100px;
+            height: 140px;
             object-fit: cover;
             display: block;
-            border-radius: 0;
         }
 
         .app-content {
-            padding: 12px 16px;
+            padding: 16px 20px;
             flex: 1;
             overflow-y: auto;
             box-sizing: border-box;
         }
 
         h1 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin: 0 0 2px 0;
-            text-align: left;
-            letter-spacing: -0.5px;
-            color: #0f172a;
-            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: var(--airbnb-dark);
+            font-weight: 700;
         }
 
         p.subtitle {
-            text-align: left;
-            color: #64748b;
-            font-size: 0.7rem;
-            margin: 0 0 12px 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
+            color: var(--airbnb-gray);
+            font-size: 0.8rem;
+            margin: 0 0 16px 0;
+            font-weight: 500;
         }
 
         .view-section {
             display: none;
-            animation: fadeIn 0.15s ease-in-out;
+            animation: fadeIn 0.2s ease-in-out;
         }
         .view-section.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* KALENDER STYLES - Clean & Sharp */
+        /* AIRBNB KALENDER STYLES */
         .month-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
-            background: #f8fafc;
-            padding: 6px 10px;
-            border-radius: 0;
-            border: 1px solid #e2e8f0;
+            margin-bottom: 12px;
         }
 
         .month-title {
-            font-size: 0.85rem;
+            font-size: 1rem;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--airbnb-dark);
         }
 
         .month-btn {
             background: #ffffff;
-            border: 1px solid #cbd5e1;
-            padding: 4px 8px;
-            border-radius: 0;
+            border: 1px solid var(--airbnb-border);
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.7rem;
-            color: #475569;
+            font-size: 0.75rem;
+            color: var(--airbnb-dark);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: transform 0.1s;
+        }
+
+        .month-btn:active {
+            transform: scale(0.95);
         }
 
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-bottom: 10px;
-            background: #e2e8f0;
-            border: 1px solid #e2e8f0;
+            gap: 4px;
+            margin-bottom: 16px;
         }
 
         .cal-header-day {
             text-align: center;
-            font-size: 0.6rem;
-            font-weight: 700;
-            color: #64748b;
-            padding: 4px 0;
-            background: #f8fafc;
-            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--airbnb-gray);
+            padding-bottom: 4px;
         }
 
         .cal-day {
-            aspect-ratio: 1.1;
+            aspect-ratio: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 0;
-            font-size: 0.75rem;
-            font-weight: 700;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: 600;
             cursor: pointer;
-            border: none;
+            border: 1px solid transparent;
             overflow: hidden;
             box-sizing: border-box;
-            padding: 1px;
-            background: #ffffff;
+            padding: 2px;
+            transition: background 0.1s;
+            margin: auto;
+            width: 36px;
+            height: 36px;
         }
 
-        .cal-day:active {
-            background: #f1f5f9;
+        .cal-day:hover {
+            border-color: var(--airbnb-dark);
         }
 
-        .owner-lene { background-color: #ffffff; color: #475569; }
-        .owner-erik { background-color: #faf5ff; color: #7e22ce; }
-        .owner-anne { background-color: #f0fdf4; color: #15803d; }
-        .cal-day.empty { background: #ffffff; cursor: default; }
+        .owner-lene { background-color: #f7f7f7; color: var(--airbnb-dark); }
+        .owner-erik { background-color: #f3f0ff; color: #6b46c1; }
+        .owner-anne { background-color: #f0fdf4; color: #166534; }
+        .cal-day.empty { background: none; cursor: default; }
 
-        .cal-day.booked-erik { background-color: #9333ea !important; color: #ffffff !important; }
-        .cal-day.booked-anne { background-color: #16a34a !important; color: #ffffff !important; }
-        .cal-day.booked-lene { background-color: #475569 !important; color: #ffffff !important; }
-        .cal-day.request { background-color: #eab308 !important; color: #ffffff !important; }
+        .cal-day.booked-erik { background-color: #9333ea !important; color: #ffffff !important; border-radius: 10px !important; }
+        .cal-day.booked-anne { background-color: #16a34a !important; color: #ffffff !important; border-radius: 10px !important; }
+        .cal-day.booked-lene { background-color: #334155 !important; color: #ffffff !important; border-radius: 10px !important; }
+        .cal-day.request { background-color: #fbbf24 !important; color: #78350f !important; border-radius: 10px !important; }
 
-        .day-number { font-size: 0.7rem; line-height: 1; }
+        .day-number { font-size: 0.75rem; line-height: 1; }
         .day-owner { 
-            font-size: 0.38rem; 
-            opacity: 0.9; 
+            font-size: 0.35rem; 
             text-transform: uppercase; 
             overflow: hidden; 
             text-overflow: ellipsis; 
             white-space: nowrap; 
             width: 100%; 
             text-align: center; 
-            margin-top: 2px;
-            font-weight: 800;
+            margin-top: 1px;
+            font-weight: 700;
         }
 
         .legend {
             display: flex;
-            justify-content: space-between;
-            background: #f8fafc;
-            padding: 6px 10px;
-            border-radius: 0;
-            font-size: 0.65rem;
-            margin-bottom: 10px;
+            justify-content: space-around;
+            background: var(--airbnb-light);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            margin-bottom: 16px;
             font-weight: 600;
-            color: #475569;
-            border: 1px solid #e2e8f0;
+            color: var(--airbnb-gray);
+            border: 1px solid var(--airbnb-border);
         }
         .legend-item { display: flex; align-items: center; gap: 4px; }
-        .legend-box { width: 7px; height: 7px; border-radius: 0; }
+        .legend-box { width: 8px; height: 8px; border-radius: 50%; }
 
         .bookings-list-title {
-            font-size: 0.8rem;
-            font-weight: 800;
-            margin: 8px 0 4px 0;
-            color: #0f172a;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 2px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 16px 0 8px 0;
+            color: var(--airbnb-dark);
         }
         .booking-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-left: 3px solid #1a5c32;
-            padding: 8px 10px;
-            border-radius: 0;
-            margin-bottom: 6px;
-            font-size: 0.75rem;
+            background: #ffffff;
+            border: 1px solid var(--airbnb-border);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .btn-delete {
             background: #fee2e2;
-            border: 1px solid #fca5a5;
+            border: none;
             color: #991b1b;
-            padding: 3px 6px;
-            border-radius: 0;
+            padding: 6px 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
-        /* CHECKLISTE & ANDRE SIDER */
+        /* CHECKLISTE & INFO STYLES */
         .checklist-category {
-            font-size: 0.85rem;
-            font-weight: 800;
-            margin: 12px 0 6px 0;
-            color: #0f172a;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 2px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin: 16px 0 8px 0;
+            color: var(--airbnb-dark);
         }
 
         .checklist-item {
             display: flex;
             align-items: flex-start;
-            background: #f8fafc;
-            padding: 8px 10px;
-            border-radius: 0;
-            margin-bottom: 4px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             cursor: pointer;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            border: 1px solid #e2e8f0;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            border: 1px solid var(--airbnb-border);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
 
         .checklist-item input {
-            margin-right: 8px;
-            margin-top: 1px;
-            width: 14px;
-            height: 14px;
-            accent-color: var(--primary);
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--airbnb-red);
             cursor: pointer;
             flex-shrink: 0;
-            border-radius: 0;
         }
 
         .checklist-item.completed span {
             text-decoration: line-through;
-            color: #94a3b8;
+            color: var(--airbnb-gray);
         }
 
-        /* INFO & FAQ STYLES */
         .info-card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0;
-            padding: 10px;
-            margin-bottom: 8px;
+            background: #ffffff;
+            border: 1px solid var(--airbnb-border);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .weather-card {
-            background: #0f172a;
-            border-radius: 0;
-            padding: 10px 14px;
-            margin-bottom: 12px;
+            background: linear-gradient(135deg, #2b2b2b 0%, #111111 100%);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             color: white;
-            border-left: 4px solid #38bdf8;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .weather-info h3 {
             margin: 0;
-            font-size: 0.85rem;
+            font-size: 0.95rem;
             color: #ffffff;
             font-weight: 700;
         }
         .weather-info p {
             margin: 2px 0 0 0;
-            font-size: 0.7rem;
-            color: #94a3b8;
+            font-size: 0.75rem;
+            color: #a1a1a1;
         }
         .weather-temp {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: #ffffff;
         }
@@ -324,8 +312,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 0;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
 
         .contact-item:last-child {
@@ -335,24 +323,25 @@
 
         .contact-info strong {
             display: block;
-            font-size: 0.75rem;
-            color: #0f172a;
-            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--airbnb-dark);
+            font-weight: 600;
         }
 
         .contact-info span {
-            font-size: 0.65rem;
-            color: #64748b;
+            font-size: 0.7rem;
+            color: var(--airbnb-gray);
         }
 
         .btn-call {
-            background-color: var(--primary);
-            color: white;
+            background-color: var(--airbnb-light);
+            color: var(--airbnb-dark);
+            border: 1px solid var(--airbnb-border);
             text-decoration: none;
-            padding: 4px 8px;
-            border-radius: 0;
-            font-size: 0.65rem;
-            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
             display: inline-flex;
             align-items: center;
             gap: 4px;
@@ -360,20 +349,21 @@
 
         /* BETALING & BESKEDER STYLES */
         .pay-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 0;
-            padding: 10px;
-            margin-bottom: 8px;
-            font-size: 0.75rem;
+            background: #ffffff;
+            border: 1px solid var(--airbnb-border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
             line-height: 1.4;
-            color: #475569;
+            color: var(--airbnb-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .calc-row {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .calc-field {
@@ -382,18 +372,18 @@
 
         .calc-field label {
             margin-top: 0;
-            font-size: 0.6rem;
-            color: #64748b;
+            font-size: 0.65rem;
+            color: var(--airbnb-gray);
         }
 
         .calc-result {
-            margin-top: 6px;
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            padding: 6px;
-            border-radius: 0;
-            font-size: 0.72rem;
-            color: #166534;
+            margin-top: 10px;
+            background: #f7f7f7;
+            border: 1px solid var(--airbnb-border);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--airbnb-dark);
             font-weight: 600;
         }
 
@@ -401,94 +391,96 @@
             display: block;
             width: 100%;
             text-align: center;
-            background: #0f172a;
+            background: var(--airbnb-red);
             color: white;
             text-decoration: none;
-            padding: 8px;
-            border-radius: 0;
+            padding: 12px;
+            border-radius: 12px;
             font-weight: 700;
-            margin-top: 8px;
+            margin-top: 12px;
             border: none;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 4px rgba(255, 56, 92, 0.3);
         }
 
         .note-card {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-left: 3px solid #d97706;
-            border-radius: 0;
-            padding: 10px;
-            margin-bottom: 6px;
-            font-size: 0.75rem;
-            line-height: 1.3;
-            color: #475569;
+            background: #ffffff;
+            border: 1px solid var(--airbnb-border);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            color: var(--airbnb-dark);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
 
         .note-header {
             display: flex;
             justify-content: space-between;
-            font-weight: 800;
-            color: #b45309;
-            margin-bottom: 3px;
+            font-weight: 700;
+            color: var(--airbnb-red);
+            margin-bottom: 4px;
         }
 
         .note-actions {
             display: flex;
-            gap: 6px;
-            margin-top: 6px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .btn-share {
-            background: #16a34a;
+            background: var(--airbnb-dark);
             border: none;
             color: white;
-            padding: 3px 6px;
-            border-radius: 0;
+            padding: 6px 12px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-size: 0.7rem;
+            font-weight: 600;
         }
 
-        /* BUNDNAV - Skarp og minimalistisk */
+        /* BUNDNAVIGATION - AIRBNB STYLE */
         .nav-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #0f172a;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0;
-            border-top: 1px solid #1e293b;
+            padding: 10px 0;
+            border-top: 1px solid var(--airbnb-border);
             z-index: 50;
         }
 
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.6rem;
-            font-weight: 700;
-            color: #94a3b8;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--airbnb-gray);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
         }
 
         .nav-item svg {
-            width: 16px;
-            height: 16px;
+            width: 20px;
+            height: 20px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
-            stroke-linecap: square;
-            stroke-linejoin: miter;
+            stroke-linecap: round;
+            stroke-linejoin: round;
         }
 
         .nav-item.active {
-            color: #38bdf8;
+            color: var(--airbnb-red);
         }
 
         /* MODAL STYLES */
@@ -496,71 +488,69 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(0, 0, 0, 0.5);
             justify-content: center;
-            align-items: center;
+            align-items: flex-end;
             z-index: 100;
         }
 
         .modal-content {
             background: #ffffff;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 0;
-            padding: 16px;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 24px 24px 0 0;
+            padding: 24px;
             box-sizing: border-box;
             max-height: 85vh;
             overflow-y: auto;
-            border: 1px solid #0f172a;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.1);
         }
 
         .modal-content h3 {
             margin-top: 0;
-            font-size: 1rem;
-            font-weight: 800;
-            color: #0f172a;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 4px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--airbnb-dark);
         }
 
         label {
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: #64748b;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--airbnb-gray);
             display: block;
-            margin-top: 8px;
+            margin-top: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         input[type="text"], input[type="date"], input[type="number"], textarea, select {
             width: 100%;
-            padding: 8px;
-            margin: 2px 0 2px 0;
-            border: 1px solid #cbd5e1;
-            border-radius: 0;
+            padding: 12px;
+            margin: 6px 0 4px 0;
+            border: 1px solid var(--airbnb-border);
+            border-radius: 12px;
             box-sizing: border-box;
-            font-size: 0.8rem;
-            background: #f8fafc;
-            color: #0f172a;
-            font-weight: 600;
+            font-size: 0.9rem;
+            background: #ffffff;
+            color: var(--airbnb-dark);
+            font-weight: 500;
         }
 
         .btn {
             width: 100%;
-            padding: 10px;
+            padding: 14px;
             border: none;
-            border-radius: 0;
-            font-size: 0.85rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             color: white;
-            margin-top: 10px;
+            margin-top: 16px;
         }
 
-        .btn-book { background: #0f172a; }
+        .btn-book { background: var(--airbnb-red); }
         .btn-request { background: #d97706; color: #fff; }
-        .btn-close { background: #f1f5f9; color: #475569; margin-top: 4px; border: 1px solid #cbd5e1; }
+        .btn-close { background: var(--airbnb-light); color: var(--airbnb-dark); margin-top: 8px; border: 1px solid var(--airbnb-border); }
     </style>
 </head>
 <body>
@@ -575,9 +565,9 @@
             <!-- KALENDER VIEW -->
             <div id="calendarView" class="view-section active">
                 <h1>Solkrogen</h1>
-                <p class="subtitle">Kalender & Booking</p>
+                <p class="subtitle">Eksklusiv familiebolig på Bornholm</p>
 
-                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 10px; padding: 8px; font-size: 0.75rem;">+ Opret booking / anmodning</button>
+                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 16px; padding: 12px; font-size: 0.85rem;">+ Opret booking / anmodning</button>
 
                 <div class="month-nav">
                     <button class="month-btn" onclick="changeMonth(-1)">‹ Forrige</button>
@@ -586,9 +576,9 @@
                 </div>
 
                 <div class="legend">
-                    <div class="legend-item"><div class="legend-box" style="background:#faf5ff; border:1px solid #d8b4fe"></div>Erik</div>
-                    <div class="legend-item"><div class="legend-box" style="background:#f0fdf4; border:1px solid #bbf7d0"></div>Anne</div>
-                    <div class="legend-item"><div class="legend-box" style="background:#ffffff; border:1px solid #cbd5e1"></div>Lene</div>
+                    <div class="legend-item"><div class="legend-box" style="background:#f3f0ff;"></div>Erik</div>
+                    <div class="legend-item"><div class="legend-box" style="background:#f0fdf4;"></div>Anne</div>
+                    <div class="legend-item"><div class="legend-box" style="background:#f7f7f7;"></div>Lene</div>
                 </div>
 
                 <div class="calendar-grid" id="calendarGrid"></div>
@@ -611,24 +601,24 @@
 
             <!-- BESKEDER & HITTEGODS VIEW -->
             <div id="notesView" class="view-section">
-                <h1>Beskeder</h1>
-                <p class="subtitle">Fælles opslagstavle</p>
+                <h1>Opslagstavle</h1>
+                <p class="subtitle">Beskeder & hittegods</p>
 
-                <button class="btn btn-book" onclick="openNoteModal()" style="margin-bottom: 10px; padding: 8px; font-size: 0.75rem;">+ Ny besked / hittegods</button>
+                <button class="btn btn-book" onclick="openNoteModal()" style="margin-bottom: 16px; padding: 12px; font-size: 0.85rem;">+ Ny besked / hittegods</button>
 
                 <div id="notesContainer">Henter beskeder...</div>
             </div>
 
             <!-- INFO & FAQ VIEW -->
             <div id="infoView" class="view-section">
-                <h1>Info</h1>
-                <p class="subtitle">Praktiske oplysninger</p>
+                <h1>Om boligen</h1>
+                <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
 
                 <div class="weather-card">
                     <div class="weather-info">
                         <h3>🌤️ Vejret i Allinge / Sankås</h3>
                         <p id="weatherWind">Henter vejrdata...</p>
-                        <a href="https://www.dmi.dk" target="_blank" style="font-size:0.65rem; color:#38bdf8; font-weight:700; text-decoration:underline; display:inline-block; margin-top:2px;">Se DMI prognose ›</a>
+                        <a href="https://www.dmi.dk" target="_blank" style="font-size:0.7rem; color:#60a5fa; font-weight:600; text-decoration:underline; display:inline-block; margin-top:4px;">Se DMI prognose ›</a>
                     </div>
                     <div class="weather-temp" id="weatherTemp">--°C</div>
                 </div>
@@ -687,12 +677,12 @@
             <!-- BETALING VIEW -->
             <div id="payView" class="view-section">
                 <h1>Betaling</h1>
-                <p class="subtitle">Ophold & afregning</p>
+                <p class="subtitle">Afregning for ophold</p>
 
-                <div class="pay-box" style="background: #fff5f5; border-color: #feb2b2;">
-                    <strong style="color: #c53030; font-size: 0.8rem;">💰 Priser for ophold:</strong><br>
-                    <span style="font-size: 0.72rem; color: #2d3748;">• Familie: <strong>75 kr.</strong> pr. næse pr. nat</span><br>
-                    <span style="font-size: 0.72rem; color: #2d3748;">• Ikke-familiemedlemmer: <strong>150 kr.</strong> pr. næse pr. nat</span>
+                <div class="pay-box" style="background: #fff5f5; border-color: #fca5a5;">
+                    <strong style="color: #b91c1c; font-size: 0.85rem;">💰 Priser for ophold:</strong><br>
+                    <span style="font-size: 0.78rem; color: #374151;">• Familie: <strong>75 kr.</strong> pr. næse pr. nat</span><br>
+                    <span style="font-size: 0.78rem; color: #374151;">• Ikke-familiemedlemmer: <strong>150 kr.</strong> pr. næse pr. nat</span>
                 </div>
 
                 <div class="pay-box">
@@ -714,13 +704,13 @@
 
                 <div class="pay-box">
                     <strong>📱 MobilePay</strong> (40 63 33 10)<br>
-                    <span style="font-size: 0.65rem; color: #64748b;" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
+                    <span style="font-size: 0.7rem; color: var(--airbnb-gray);" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
                     <button class="pay-btn" onclick="copyMobilePayNumber()">Kopier nummer & åbn MobilePay</button>
                 </div>
 
                 <div class="pay-box">
                     <strong>🏦 Bankoverførsel</strong> (Reg: 2128 - Konto: 5369327617)<br>
-                    <span style="font-size: 0.65rem; color: #64748b;">Husk at skrive navn og "Solkrogen".</span>
+                    <span style="font-size: 0.7rem; color: var(--airbnb-gray);">Husk at skrive navn og "Solkrogen".</span>
                 </div>
             </div>
 
@@ -729,23 +719,23 @@
         <!-- BUNDNAVIGATION -->
         <div class="nav-bar">
             <button class="nav-item active" onclick="switchView('calendar', this)">
-                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 Kalender
             </button>
             <button class="nav-item" onclick="switchView('checklist', this)">
-                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="21 12v7H3V5h13"></path></svg>
+                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"></path><path d="21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
                 Huskeliste
             </button>
             <button class="nav-item" onclick="switchView('notes', this)">
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                Beskeder
+                Opslagstavle
             </button>
             <button class="nav-item" onclick="switchView('info', this)">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                Info
+                Om boligen
             </button>
             <button class="nav-item" onclick="switchView('pay', this)">
-                <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 Betaling
             </button>
         </div>
@@ -773,7 +763,7 @@
             <label for="endDate">Til dato</label>
             <input type="date" id="endDate" value="2026-09-07" onchange="checkBookingType()">
 
-            <p id="bookingNotice" style="font-size: 0.75rem; color: #475569; background: #f8fafc; padding: 8px; border-radius: 0; margin-top: 8px; border: 1px solid #e2e8f0; font-weight: 500;"></p>
+            <p id="bookingNotice" style="font-size: 0.8rem; color: #374151; background: #f7f7f7; padding: 12px; border-radius: 12px; margin-top: 12px; border: 1px solid var(--airbnb-border); font-weight: 500;"></p>
 
             <button id="actionBtn" class="btn btn-book" onclick="submitBooking()">Bekræft booking</button>
             <button class="btn btn-close" onclick="closeModal()">Annuller</button>
@@ -967,7 +957,7 @@
                 if (booking) {
                     if (booking.status === 'request') {
                         dayClass = 'request';
-                        subText = "Anmodning";
+                        subText = "Anmod";
                     } else {
                         dayClass = `booked-${booking.branch ? booking.branch.toLowerCase() : 'lene'}`;
                         subText = booking.user_name;
@@ -987,7 +977,7 @@
         function renderBookingsList() {
             const container = document.getElementById('bookingsListContainer');
             if (existingBookings.length === 0) {
-                container.innerHTML = `<div class="booking-card" style="color: #64748b; display: block;">Ingen aktive bookinger eller anmodninger endnu.</div>`;
+                container.innerHTML = `<div class="booking-card" style="color: var(--airbnb-gray); display: block;">Ingen aktive bookinger eller anmodninger endnu.</div>`;
                 return;
             }
 
@@ -998,7 +988,7 @@
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
                     <div>
-                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 3px 6px; font-size:0.65rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
+                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.7rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
                         <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
                     </div>
                 </div>
@@ -1008,7 +998,7 @@
         function renderNotes() {
             const container = document.getElementById('notesContainer');
             if (existingNotes.length === 0) {
-                container.innerHTML = `<div class="pay-box" style="color: #64748b;">Ingen fællesbeskeder eller hittegods endnu.</div>`;
+                container.innerHTML = `<div class="pay-box" style="color: var(--airbnb-gray);">Ingen fællesbeskeder eller hittegods endnu.</div>`;
                 return;
             }
 
