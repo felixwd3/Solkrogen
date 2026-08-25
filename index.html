@@ -112,15 +112,18 @@
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 16px;
+        }
+        .sun-stats-header {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            margin-bottom: 10px;
         }
         .sun-icon {
-            font-size: 2rem;
+            font-size: 1.8rem;
             background: #fef3c7;
-            width: 50px;
-            height: 50px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -135,9 +138,19 @@
         }
         .sun-info p {
             margin: 0;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #b45309;
-            line-height: 1.3;
+        }
+        .sun-comparison {
+            font-size: 0.78rem;
+            color: #78350f;
+            background: #fef3c7;
+            padding: 8px 12px;
+            border-radius: 10px;
+            margin-top: 8px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
         }
 
         /* AIRBNB KALENDER STYLES */
@@ -665,10 +678,16 @@
                 </div>
 
                 <div class="sun-stats-card">
-                    <div class="sun-icon">☀️</div>
-                    <div class="sun-info">
-                        <h3>Danmarks solskinsø</h3>
-                        <p>Bornholm har årligt ca. <strong>1.800 – 2.000 solskinstimer</strong> – ofte flest i hele landet!</p>
+                    <div class="sun-stats-header">
+                        <div class="sun-icon">☀️</div>
+                        <div class="sun-info">
+                            <h3>Sol-Barometer (År til dato)</h3>
+                            <p id="sunHoursCount">Beregner soltimer for Bornholm...</p>
+                        </div>
+                    </div>
+                    <div class="sun-comparison" id="sunComparisonText">
+                        <span>Bornholm vs. DK-snit</span>
+                        <strong>Henter statistik...</strong>
                     </div>
                 </div>
             </div>
@@ -967,6 +986,7 @@
             renderHistory();
             renderNotes();
             fetchWeather();
+            calculateSunStats();
             calculatePrice();
         }
 
@@ -992,6 +1012,24 @@
         setInterval(() => {
             loadData();
         }, 30000);
+
+        function calculateSunStats() {
+            const now = new Date();
+            const startOfYear = new Date(now.getFullYear(), 0, 1);
+            const daysPassed = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+            
+            // Bornholm snit: ca 1850 timer årligt (~5.07 timer/dag)
+            // DK gennemsnit: ca 1700 timer årligt (~4.65 timer/dag)
+            const bornholmHours = Math.round(daysPassed * 5.07);
+            const dkHours = Math.round(daysPassed * 4.65);
+            const diff = bornholmHours - dkHours;
+
+            document.getElementById('sunHoursCount').innerHTML = `Ca. <strong>${bornholmHours} soltimer</strong> i år (${daysPassed} dage)`;
+            document.getElementById('sunComparisonText').innerHTML = `
+                <span>☀️ Danmarks-gennemsnit (${dkHours} t)</span>
+                <strong style="color: #b45309;">+${diff} timer foran!</strong>
+            `;
+        }
 
         function exportICal() {
             let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Solkrogen//Booking Kalender//DA\n";
@@ -1381,11 +1419,11 @@
         }
 
         function submitBooking() {
-            const userName = document.getElementById('userName').value;
-            const userPhone = document.getElementById('userPhone').value;
-            const userBranch = document.getElementById('userBranch').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+            const userName = document.getElementById('userName'].value;
+            const userPhone = document.getElementById('userPhone'].value;
+            const userBranch = document.getElementById('userBranch'].value;
+            const startDate = document.getElementById('startDate'].value;
+            const endDate = document.getElementById('endDate'].value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
