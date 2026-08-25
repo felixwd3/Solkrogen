@@ -211,6 +211,7 @@
         .cal-day.booked-anne { background-color: #16a34a !important; color: #ffffff !important; border-radius: 10px !important; }
         .cal-day.booked-lene { background-color: #334155 !important; color: #ffffff !important; border-radius: 10px !important; }
         .cal-day.request { background-color: #fbbf24 !important; color: #78350f !important; border-radius: 10px !important; }
+        .cal-day.rejected { background-color: #fee2e2 !important; color: #991b1b !important; border-radius: 10px !important; text-decoration: line-through; }
 
         .day-number { font-size: 0.75rem; line-height: 1; }
         .day-owner { 
@@ -267,6 +268,30 @@
             cursor: pointer;
             font-size: 0.7rem;
             font-weight: 600;
+        }
+
+        .btn-approve {
+            background: #16a34a;
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .btn-reject {
+            background: #dc2626;
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 4px;
         }
 
         /* CHECKLISTE & INFO STYLES */
@@ -905,7 +930,6 @@
         let isCurrentRequest = false;
         let canApprove = false;
 
-        // Alle anmodninger om lån går nu direkte til dit nummer (30690738)
         const familyAdmins = {
             "Lene": { name: "Felix", phone: "30690738" },
             "Erik": { name: "Felix", phone: "30690738" },
@@ -1028,7 +1052,10 @@
 
         function isDateBooked(year, month, day) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            return existingBookings.find(b => dateStr >= b.start_date && dateStr <= b.end_date);
+            const booking = existingBookings.find(b => dateStr >= b.start_date && dateStr <= b.end_date);
+            // Ignorer afviste bookinger så de ikke blokerer kalenderen
+            if (booking && booking.status === 'rejected') return null;
+            return booking;
         }
 
         function renderCalendar() {
@@ -1063,7 +1090,7 @@
                     if (booking.status === 'request') {
                         dayClass = 'request';
                         subText = "Anmod";
-                    } else {
+                    } else if (booking.status === 'confirmed') {
                         dayClass = `booked-${booking.branch ? booking.branch.toLowerCase() : 'lene'}`;
                         subText = booking.user_name;
                     }
@@ -1086,18 +1113,27 @@
                 return;
             }
 
-            container.innerHTML = existingBookings.map((b, index) => `
-                <div class="booking-card">
-                    <div>
-                        <strong>${b.user_name}</strong> (${b.branch} familie) - ${b.status === 'request' ? '⏳ <em>Afventer lån</em>' : '✅ <em>Bekræftet</em>'}<br>
-                        📅 ${b.start_date} til ${b.end_date}
+            container.innerHTML = existingBookings.map((b, index) => {
+                let statusText = '✅ <em>Bekræftet</em>';
+                if (b.status === 'request') statusText = '⏳ <em>Afventer godkendelse</em>';
+                if (b.status === 'rejected') statusText = '❌ <em>Afvist</em>';
+
+                return `
+                    <div class="booking-card">
+                        <div>
+                            <strong>${b.user_name}</strong> (${b.branch} familie) - ${statusText}<br>
+                            📅 ${b.start_date} til ${b.end_date}
+                        </div>
+                        <div>
+                            ${(b.status === 'request' && canApprove) ? `
+                                <button class="btn-approve" onclick="approveRequest(${index})">Godkend</button>
+                                <button class="btn-reject" onclick="rejectRequest(${index})">Afvis</button>
+                            ` : ''}
+                            <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
+                        </div>
                     </div>
-                    <div>
-                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.7rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
-                        <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function renderNotes() {
@@ -1152,6 +1188,12 @@
             existingBookings[index].status = 'confirmed';
             saveBookings();
             alert("Anmodningen er godkendt!");
+        }
+
+        function rejectRequest(index) {
+            existingBookings[index].status = 'rejected';
+            saveBookings();
+            alert("Anmodningen er afvist.");
         }
 
         function deleteBooking(index) {
@@ -1268,10 +1310,10 @@
         }
 
         function submitBooking() {
-            const userName = document.getElementById('userName').value;
-            const userBranch = document.getElementById('userBranch').value;
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
+            const userName = document.getElementById('userName'].value;
+            const userBranch = document.getElementById('userBranch'].value;
+            const startDate = document.getElementById('startDate'].value;
+            const endDate = document.getElementById('endDate'].value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
@@ -1285,7 +1327,7 @@
             existingBookings.push(newBooking);
             saveBookings();
             closeModal();
-            document.getElementById('userName').value = '';
+            document.getElementById('userName'].value = '';
 
             if(status === 'request') {
                 const currentBaseURL = window.location.origin + window.location.pathname;
@@ -1293,7 +1335,7 @@
                 
                 const responsibleAdmin = familyAdmins[ownerInfo.branch] || { phone: "30690738" };
                 
-                const smsText = encodeURIComponent(`Hej! ${userName} (${userBranch} familie) har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Godkend her: ${approvalLink}`);
+                const smsText = encodeURIComponent(`Hej! ${userName} (${userBranch} familie) har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Godkend/afvis her: ${approvalLink}`);
                 window.location.href = `sms:${responsibleAdmin.phone}?body=${smsText}`;
             } else {
                 alert(`Booking gennemført for ${userName}!`);
