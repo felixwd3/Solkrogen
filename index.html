@@ -682,7 +682,7 @@
                 <div class="pay-box">
                     <strong>📱 MobilePay</strong> (40 63 33 10)<br>
                     <span style="font-size: 0.7rem; color: var(--airbnb-gray);" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
-                    <button class="pay-btn" onclick="openMobilePay()">Åbn MobilePay (Kopierer nummer)</button>
+                    <button class="pay-btn" onclick="copyMobilePayNumber()">Kopier nummer til MobilePay</button>
                 </div>
 
                 <div class="pay-box">
@@ -822,23 +822,15 @@
             `;
         }
 
-        function openMobilePay() {
+        function copyMobilePayNumber() {
             const number = "40633310";
-            
-            // Kopier nummer til udklipsholderen
             navigator.clipboard.writeText(number).then(() => {
                 const status = document.getElementById('copyStatus');
-                status.innerText = "✅ Nummer (40633310) kopieret! Åbner MobilePay...";
+                status.innerText = "✅ Nummer 40633310 er kopieret!";
                 status.style.color = "#16a34a";
                 status.style.fontWeight = "700";
-
-                // Åbn MobilePay app eller overordnet fallback
-                setTimeout(() => {
-                    window.location.href = "mobilepay://";
-                }, 500);
             }).catch(err => {
-                // Hvis clipboardfejl opstår, prøv direkte app-link alligevel
-                window.location.href = "mobilepay://";
+                alert("Nummeret er: 40633310");
             });
         }
 
