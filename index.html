@@ -88,6 +88,60 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* FORSIDE STYLES */
+        .welcome-card {
+            background: linear-gradient(135deg, #FF385C 0%, #e00b38 100%);
+            border-radius: 16px;
+            padding: 18px;
+            color: white;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(255, 56, 92, 0.25);
+        }
+        .welcome-card h2 {
+            margin: 0 0 6px 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .welcome-card p {
+            margin: 0;
+            font-size: 0.82rem;
+            opacity: 0.95;
+            line-height: 1.4;
+        }
+
+        .event-card {
+            background: #ffffff;
+            border: 1px solid var(--airbnb-border);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .event-date {
+            background: #fef2f2;
+            color: #ef4444;
+            padding: 6px 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            min-width: 36px;
+        }
+        .event-info h4 {
+            margin: 0 0 2px 0;
+            font-size: 0.85rem;
+            color: var(--airbnb-dark);
+            font-weight: 700;
+        }
+        .event-info p {
+            margin: 0;
+            font-size: 0.72rem;
+            color: var(--airbnb-gray);
+            line-height: 1.3;
+        }
+
         /* AIRBNB KALENDER STYLES */
         .month-nav {
             display: flex;
@@ -430,7 +484,7 @@
             font-weight: 600;
         }
 
-        /* BUNDNAVIGATION */
+        /* BUNDNAVIGATION (6 ikoner) */
         .nav-bar {
             position: fixed;
             bottom: 0;
@@ -442,7 +496,7 @@
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0 14px 0;
+            padding: 8px 0 12px 0;
             border-top: 1px solid var(--airbnb-border);
             z-index: 50;
         }
@@ -450,19 +504,20 @@
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.65rem;
+            font-size: 0.58rem;
             font-weight: 600;
             color: var(--airbnb-gray);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 2px;
+            padding: 0 2px;
         }
 
         .nav-item svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -552,10 +607,56 @@
         </div>
 
         <div class="app-content">
+            
+            <!-- FORSIDE VIEW -->
+            <div id="homeView" class="view-section active">
+                <h1>Velkommen til Solkrogen</h1>
+                <p class="subtitle">Jeres feriebolig i Sankås / Allinge</p>
+
+                <div class="welcome-card">
+                    <h2>🏡 Solkrogen på Bornholm</h2>
+                    <p>Velkommen til det fælles åndehul. Tjek hvem der har huset i kalenderen, opret bookinger, eller se de praktiske huskelister for afrejse.</p>
+                </div>
+
+                <div class="weather-card" style="margin-bottom: 16px;">
+                    <div class="weather-info">
+                        <h3>🌤️ Vejret i Allinge / Sankås</h3>
+                        <p id="homeWeatherWind">Henter vejrdata...</p>
+                    </div>
+                    <div class="weather-temp" id="homeWeatherTemp">--°C</div>
+                </div>
+
+                <div class="checklist-category" style="margin-top: 0;">🎉 Det sker på Bornholm</div>
+                
+                <div class="event-card">
+                    <div class="event-date">SEP</div>
+                    <div class="event-info">
+                        <h4>Kulturugen på Bornholm</h4>
+                        <p>Årlige kunstudstilling, åbne værksteder, koncerter og særarrangementer over hele øen.</p>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">OKT</div>
+                    <div class="event-info">
+                        <h4>Naturbornholm & Høstmarked</h4>
+                        <p>Lokale markeder med bornholmske specialiteter, sennep, bolcher og frisk røgvare fra røgerierne.</p>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">HELE ÅRET</div>
+                    <div class="event-info">
+                        <h4>Kyststien & Hammershus</h4>
+                        <p>Nyd en frisk gåtur langs klipperne fra Sankås mod Allinge eller besøg Danmarks største middelalderborg.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- KALENDER VIEW -->
-            <div id="calendarView" class="view-section active">
-                <h1>Solkrogen</h1>
-                <p class="subtitle">Eksklusiv familiebolig på Bornholm</p>
+            <div id="calendarView" class="view-section">
+                <h1>Kalender</h1>
+                <p class="subtitle">Oversigt over uger og bookinger</p>
 
                 <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 16px;">+ Opret booking / anmodning</button>
 
@@ -603,13 +704,6 @@
             <div id="infoView" class="view-section">
                 <h1>Om boligen</h1>
                 <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
-
-                <!-- INSTALLER APP SEKTION -->
-                <div id="installBox" class="pay-box" style="display: none; background: #fff1f2; border-color: #fecdd3; text-align: center;">
-                    <strong style="color: #9f1239; font-size: 0.9rem;">📲 Installer Solkrogen-appen</strong>
-                    <p style="font-size: 0.75rem; color: #4b5563; margin: 6px 0 12px 0;">Få hurtig adgang direkte fra din startskærm uden browser-linjer.</p>
-                    <button class="pay-btn" id="installBtn" style="background: var(--airbnb-red); margin-top: 0;">Installer på startskærm</button>
-                </div>
 
                 <div class="weather-card">
                     <div class="weather-info">
@@ -714,9 +808,13 @@
 
         </div>
 
-        <!-- BUNDNAVIGATION -->
+        <!-- BUNDNAVIGATION (6 ikoner) -->
         <div class="nav-bar">
-            <button class="nav-item active" onclick="switchView('calendar', this)">
+            <button class="nav-item active" onclick="switchView('home', this)">
+                <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Forside
+            </button>
+            <button class="nav-item" onclick="switchView('calendar', this)">
                 <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 Kalender
             </button>
@@ -726,11 +824,11 @@
             </button>
             <button class="nav-item" onclick="switchView('notes', this)">
                 <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                Opslagstavle
+                Opslag
             </button>
             <button class="nav-item" onclick="switchView('info', this)">
                 <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                Om boligen
+                Info
             </button>
             <button class="nav-item" onclick="switchView('pay', this)">
                 <svg viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
@@ -792,25 +890,6 @@
     </div>
 
     <script>
-        // PWA Installation Logik
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            document.getElementById('installBox').style.display = 'block';
-        });
-
-        document.getElementById('installBtn').addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    document.getElementById('installBox').style.display = 'none';
-                }
-                deferredPrompt = null;
-            }
-        });
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
@@ -881,12 +960,18 @@
                 if (data && data.current_weather) {
                     const temp = Math.round(data.current_weather.temperature);
                     const wind = Math.round(data.current_weather.windspeed);
+                    
                     document.getElementById('weatherTemp').innerText = `${temp}°C`;
                     document.getElementById('weatherWind').innerText = `Vind: ${wind} m/s`;
+                    
+                    document.getElementById('homeWeatherTemp').innerText = `${temp}°C`;
+                    document.getElementById('homeWeatherWind').innerText = `Vind: ${wind} m/s`;
                 }
             } catch(e) {
                 document.getElementById('weatherTemp').innerText = "☀️";
                 document.getElementById('weatherWind').innerText = "Vejrdata utilgængelig";
+                document.getElementById('homeWeatherTemp').innerText = "☀️";
+                document.getElementById('homeWeatherWind').innerText = "Vejrdata utilgængelig";
             }
         }
 
