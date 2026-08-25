@@ -42,20 +42,8 @@
             min-height: 100vh;
         }
 
-        .app-header-container {
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .app-header-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            display: block;
-        }
-
         .app-content {
-            padding: 16px 20px 30px 20px;
+            padding: 20px 20px 30px 20px;
             flex: 1;
             box-sizing: border-box;
         }
@@ -89,6 +77,15 @@
         }
 
         /* FORSIDE STYLES */
+        .home-hero-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            display: block;
+        }
+
         .welcome-card {
             background: linear-gradient(135deg, #FF385C 0%, #e00b38 100%);
             border-radius: 16px;
@@ -109,36 +106,37 @@
             line-height: 1.4;
         }
 
-        .event-card {
-            background: #ffffff;
-            border: 1px solid var(--airbnb-border);
-            border-radius: 14px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
+        .sun-stats-card {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
             display: flex;
-            gap: 12px;
-            align-items: flex-start;
+            align-items: center;
+            gap: 14px;
         }
-        .event-date {
-            background: #fef2f2;
-            color: #ef4444;
-            padding: 6px 10px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.75rem;
-            min-width: 36px;
+        .sun-icon {
+            font-size: 2rem;
+            background: #fef3c7;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            flex-shrink: 0;
         }
-        .event-info h4 {
+        .sun-info h3 {
             margin: 0 0 2px 0;
-            font-size: 0.85rem;
-            color: var(--airbnb-dark);
+            font-size: 0.9rem;
+            color: #92400e;
             font-weight: 700;
         }
-        .event-info p {
+        .sun-info p {
             margin: 0;
-            font-size: 0.72rem;
-            color: var(--airbnb-gray);
+            font-size: 0.75rem;
+            color: #b45309;
             line-height: 1.3;
         }
 
@@ -644,14 +642,12 @@
 
     <div class="app-container">
         
-        <div class="app-header-container">
-            <img src="hus.jpg" alt="Solkrogen luftfoto" class="app-header-image">
-        </div>
-
         <div class="app-content">
             
             <!-- FORSIDE VIEW -->
             <div id="homeView" class="view-section active">
+                <img src="hus.jpg" alt="Solkrogen luftfoto" class="home-hero-image">
+
                 <h1>Velkommen til Solkrogen</h1>
                 <p class="subtitle">Feriebolig i Sankås / Allinge</p>
 
@@ -668,29 +664,11 @@
                     <div class="weather-temp" id="homeWeatherTemp">--°C</div>
                 </div>
 
-                <div class="checklist-category" style="margin-top: 0;">🎉 Det sker på Bornholm</div>
-                
-                <div class="event-card">
-                    <div class="event-date">SEP</div>
-                    <div class="event-info">
-                        <h4>Kulturugen på Bornholm</h4>
-                        <p>Årlige kunstudstilling, åbne værksteder, koncerter og særarrangementer over hele øen.</p>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-date">OKT</div>
-                    <div class="event-info">
-                        <h4>Naturbornholm & Høstmarked</h4>
-                        <p>Lokale markeder med bornholmske specialiteter, sennep, bolcher og frisk røgvare fra røgerierne.</p>
-                    </div>
-                </div>
-
-                <div class="event-card">
-                    <div class="event-date">HELE ÅRET</div>
-                    <div class="event-info">
-                        <h4>Kyststien & Hammershus</h4>
-                        <p>Nyd en frisk gåtur langs klipperne fra Sankås mod Allinge eller besøg Danmarks største middelalderborg.</p>
+                <div class="sun-stats-card">
+                    <div class="sun-icon">☀️</div>
+                    <div class="sun-info">
+                        <h3>Danmarks solskinsø</h3>
+                        <p>Bornholm har årligt ca. <strong>1.800 – 2.000 solskinstimer</strong> – ofte flest i hele landet!</p>
                     </div>
                 </div>
             </div>
@@ -1011,7 +989,6 @@
             renderNotes();
         }
 
-        // Automatisk live-opdatering hvert 30. sekund
         setInterval(() => {
             loadData();
         }, 30000);
