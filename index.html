@@ -2,7 +2,7 @@
 <html lang="da">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solkrogen - Booking & Info</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#FF385C">
@@ -24,25 +24,22 @@
             background-color: #f0f2f5;
             color: var(--airbnb-dark);
             margin: 0;
-            padding: 0;
+            padding: 0 0 90px 0;
             display: flex;
             justify-content: center;
-            height: 100vh;
             box-sizing: border-box;
-            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
         .app-container {
             width: 100%;
             max-width: 440px;
-            height: 100%;
             background: #ffffff;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            overflow: hidden;
             position: relative;
+            min-height: 100vh;
         }
 
         .app-header-container {
@@ -52,20 +49,19 @@
 
         .app-header-image {
             width: 100%;
-            height: 130px;
+            height: 150px;
             object-fit: cover;
             display: block;
         }
 
         .app-content {
-            padding: 16px 20px 85px 20px;
+            padding: 16px 20px 30px 20px;
             flex: 1;
-            overflow-y: auto;
             box-sizing: border-box;
         }
 
         h1 {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             margin: 0 0 2px 0;
             letter-spacing: -0.3px;
             color: var(--airbnb-dark);
@@ -74,8 +70,8 @@
 
         p.subtitle {
             color: var(--airbnb-gray);
-            font-size: 0.78rem;
-            margin: 0 0 14px 0;
+            font-size: 0.8rem;
+            margin: 0 0 16px 0;
             font-weight: 500;
         }
 
@@ -101,7 +97,7 @@
         }
 
         .month-title {
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--airbnb-dark);
         }
@@ -109,11 +105,11 @@
         .month-btn {
             background: #ffffff;
             border: 1px solid var(--airbnb-border);
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             color: var(--airbnb-dark);
             box-shadow: 0 1px 2px rgba(0,0,0,0.04);
         }
@@ -122,12 +118,12 @@
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 4px;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
         }
 
         .cal-header-day {
             text-align: center;
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: var(--airbnb-gray);
             padding-bottom: 4px;
@@ -140,7 +136,7 @@
             justify-content: center;
             align-items: center;
             border-radius: 50%;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             border: 1px solid transparent;
@@ -148,8 +144,8 @@
             box-sizing: border-box;
             padding: 2px;
             margin: auto;
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
         }
 
         .owner-lene { background-color: #f7f7f7; color: var(--airbnb-dark); }
@@ -162,7 +158,7 @@
         .cal-day.booked-lene { background-color: #334155 !important; color: #ffffff !important; border-radius: 10px !important; }
         .cal-day.request { background-color: #fbbf24 !important; color: #78350f !important; border-radius: 10px !important; }
 
-        .day-number { font-size: 0.7rem; line-height: 1; }
+        .day-number { font-size: 0.75rem; line-height: 1; }
         .day-owner { 
             font-size: 0.35rem; 
             text-transform: uppercase; 
@@ -179,10 +175,10 @@
             display: flex;
             justify-content: space-around;
             background: var(--airbnb-light);
-            padding: 8px;
+            padding: 10px;
             border-radius: 12px;
-            font-size: 0.68rem;
-            margin-bottom: 14px;
+            font-size: 0.7rem;
+            margin-bottom: 16px;
             font-weight: 600;
             color: var(--airbnb-gray);
             border: 1px solid var(--airbnb-border);
@@ -191,18 +187,18 @@
         .legend-box { width: 8px; height: 8px; border-radius: 50%; }
 
         .bookings-list-title {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            margin: 14px 0 6px 0;
+            margin: 16px 0 8px 0;
             color: var(--airbnb-dark);
         }
         .booking-card {
             background: #ffffff;
             border: 1px solid var(--airbnb-border);
-            padding: 10px 12px;
+            padding: 12px;
             border-radius: 12px;
-            margin-bottom: 6px;
-            font-size: 0.78rem;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -212,18 +208,18 @@
             background: #fee2e2;
             border: none;
             color: #991b1b;
-            padding: 5px 8px;
+            padding: 6px 10px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         /* CHECKLISTE & INFO STYLES */
         .checklist-category {
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            margin: 14px 0 6px 0;
+            margin: 16px 0 8px 0;
             color: var(--airbnb-dark);
         }
 
@@ -231,20 +227,20 @@
             display: flex;
             align-items: flex-start;
             background: #ffffff;
-            padding: 10px 12px;
+            padding: 12px;
             border-radius: 12px;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             cursor: pointer;
-            font-size: 0.78rem;
-            line-height: 1.3;
+            font-size: 0.8rem;
+            line-height: 1.4;
             border: 1px solid var(--airbnb-border);
         }
 
         .checklist-item input {
-            margin-right: 10px;
-            margin-top: 1px;
-            width: 15px;
-            height: 15px;
+            margin-right: 12px;
+            margin-top: 2px;
+            width: 16px;
+            height: 16px;
             accent-color: var(--airbnb-red);
             cursor: pointer;
             flex-shrink: 0;
@@ -258,16 +254,16 @@
         .info-card {
             background: #ffffff;
             border: 1px solid var(--airbnb-border);
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 10px;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
         }
 
         .weather-card {
             background: linear-gradient(135deg, #2b2b2b 0%, #111111 100%);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 14px;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -276,17 +272,17 @@
 
         .weather-info h3 {
             margin: 0;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #ffffff;
             font-weight: 700;
         }
         .weather-info p {
             margin: 2px 0 0 0;
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             color: #a1a1a1;
         }
         .weather-temp {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
             color: #ffffff;
         }
@@ -295,7 +291,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 1px solid #f0f0f0;
         }
 
@@ -306,13 +302,13 @@
 
         .contact-info strong {
             display: block;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: var(--airbnb-dark);
             font-weight: 600;
         }
 
         .contact-info span {
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             color: var(--airbnb-gray);
         }
 
@@ -321,9 +317,9 @@
             color: var(--airbnb-dark);
             border: 1px solid var(--airbnb-border);
             text-decoration: none;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 20px;
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
@@ -334,18 +330,18 @@
         .pay-box {
             background: #ffffff;
             border: 1px solid var(--airbnb-border);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 10px;
-            font-size: 0.8rem;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
             line-height: 1.4;
             color: var(--airbnb-dark);
         }
 
         .calc-row {
             display: flex;
-            gap: 8px;
-            margin-top: 8px;
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .calc-field {
@@ -354,17 +350,17 @@
 
         .calc-field label {
             margin-top: 0;
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             color: var(--airbnb-gray);
         }
 
         .calc-result {
-            margin-top: 8px;
+            margin-top: 10px;
             background: #f7f7f7;
             border: 1px solid var(--airbnb-border);
-            padding: 8px;
+            padding: 10px;
             border-radius: 10px;
-            font-size: 0.78rem;
+            font-size: 0.8rem;
             color: var(--airbnb-dark);
             font-weight: 600;
         }
@@ -376,22 +372,22 @@
             background: var(--airbnb-red);
             color: white;
             text-decoration: none;
-            padding: 10px;
+            padding: 12px;
             border-radius: 12px;
             font-weight: 700;
-            margin-top: 10px;
+            margin-top: 12px;
             border: none;
             cursor: pointer;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .note-card {
             background: #ffffff;
             border: 1px solid var(--airbnb-border);
-            border-radius: 14px;
-            padding: 12px;
-            margin-bottom: 8px;
-            font-size: 0.78rem;
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 10px;
+            font-size: 0.8rem;
             line-height: 1.4;
             color: var(--airbnb-dark);
         }
@@ -401,37 +397,39 @@
             justify-content: space-between;
             font-weight: 700;
             color: var(--airbnb-red);
-            margin-bottom: 3px;
+            margin-bottom: 4px;
         }
 
         .note-actions {
             display: flex;
-            gap: 6px;
-            margin-top: 8px;
+            gap: 8px;
+            margin-top: 10px;
         }
 
         .btn-share {
             background: var(--airbnb-dark);
             border: none;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.68rem;
+            font-size: 0.7rem;
             font-weight: 600;
         }
 
         /* BUNDNAVIGATION */
         .nav-bar {
-            position: absolute;
+            position: fixed;
             bottom: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%;
+            max-width: 440px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 10px 0;
+            padding: 10px 0 14px 0;
             border-top: 1px solid var(--airbnb-border);
             z-index: 50;
         }
@@ -439,19 +437,19 @@
         .nav-item {
             background: none;
             border: none;
-            font-size: 0.62rem;
+            font-size: 0.65rem;
             font-weight: 600;
             color: var(--airbnb-gray);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
         }
 
         .nav-item svg {
-            width: 18px;
-            height: 18px;
+            width: 20px;
+            height: 20px;
             stroke: currentColor;
             fill: none;
             stroke-width: 2;
@@ -479,7 +477,7 @@
             width: 100%;
             max-width: 440px;
             border-radius: 24px 24px 0 0;
-            padding: 20px;
+            padding: 24px;
             box-sizing: border-box;
             max-height: 85vh;
             overflow-y: auto;
@@ -487,29 +485,29 @@
 
         .modal-content h3 {
             margin-top: 0;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: var(--airbnb-dark);
         }
 
         label {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--airbnb-gray);
             display: block;
-            margin-top: 10px;
+            margin-top: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         input[type="text"], input[type="date"], input[type="number"], textarea, select {
             width: 100%;
-            padding: 10px;
-            margin: 4px 0 2px 0;
+            padding: 12px;
+            margin: 6px 0 4px 0;
             border: 1px solid var(--airbnb-border);
-            border-radius: 10px;
+            border-radius: 12px;
             box-sizing: border-box;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             background: #ffffff;
             color: var(--airbnb-dark);
             font-weight: 500;
@@ -517,19 +515,19 @@
 
         .btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             border: none;
             border-radius: 12px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 700;
             cursor: pointer;
             color: white;
-            margin-top: 14px;
+            margin-top: 16px;
         }
 
         .btn-book { background: var(--airbnb-red); }
         .btn-request { background: #d97706; color: #fff; }
-        .btn-close { background: var(--airbnb-light); color: var(--airbnb-dark); margin-top: 6px; border: 1px solid var(--airbnb-border); }
+        .btn-close { background: var(--airbnb-light); color: var(--airbnb-dark); margin-top: 8px; border: 1px solid var(--airbnb-border); }
     </style>
 </head>
 <body>
@@ -546,7 +544,7 @@
                 <h1>Solkrogen</h1>
                 <p class="subtitle">Eksklusiv familiebolig på Bornholm</p>
 
-                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 12px; padding: 10px; font-size: 0.8rem;">+ Opret booking / anmodning</button>
+                <button class="btn btn-book" onclick="openModal()" style="margin-bottom: 16px;">+ Opret booking / anmodning</button>
 
                 <div class="month-nav">
                     <button class="month-btn" onclick="changeMonth(-1)">‹ Forrige</button>
@@ -583,7 +581,7 @@
                 <h1>Opslagstavle</h1>
                 <p class="subtitle">Beskeder & hittegods</p>
 
-                <button class="btn btn-book" onclick="openNoteModal()" style="margin-bottom: 12px; padding: 10px; font-size: 0.8rem;">+ Ny besked / hittegods</button>
+                <button class="btn btn-book" onclick="openNoteModal()" style="margin-bottom: 16px;">+ Ny besked / hittegods</button>
 
                 <div id="notesContainer">Henter beskeder...</div>
             </div>
@@ -597,7 +595,7 @@
                     <div class="weather-info">
                         <h3>🌤️ Vejret i Allinge / Sankås</h3>
                         <p id="weatherWind">Henter vejrdata...</p>
-                        <a href="https://www.dmi.dk" target="_blank" style="font-size:0.68rem; color:#60a5fa; font-weight:600; text-decoration:underline; display:inline-block; margin-top:2px;">Se DMI prognose ›</a>
+                        <a href="https://www.dmi.dk" target="_blank" style="font-size:0.7rem; color:#60a5fa; font-weight:600; text-decoration:underline; display:inline-block; margin-top:4px;">Se DMI prognose ›</a>
                     </div>
                     <div class="weather-temp" id="weatherTemp">--°C</div>
                 </div>
@@ -659,9 +657,9 @@
                 <p class="subtitle">Afregning for ophold</p>
 
                 <div class="pay-box" style="background: #fff5f5; border-color: #fca5a5;">
-                    <strong style="color: #b91c1c; font-size: 0.8rem;">💰 Priser for ophold:</strong><br>
-                    <span style="font-size: 0.72rem; color: #374151;">• Familie: <strong>75 kr.</strong> pr. næse pr. nat</span><br>
-                    <span style="font-size: 0.72rem; color: #374151;">• Ikke-familiemedlemmer: <strong>150 kr.</strong> pr. næse pr. nat</span>
+                    <strong style="color: #b91c1c; font-size: 0.85rem;">💰 Priser for ophold:</strong><br>
+                    <span style="font-size: 0.78rem; color: #374151;">• Familie: <strong>75 kr.</strong> pr. næse pr. nat</span><br>
+                    <span style="font-size: 0.78rem; color: #374151;">• Ikke-familiemedlemmer: <strong>150 kr.</strong> pr. næse pr. nat</span>
                 </div>
 
                 <div class="pay-box">
@@ -683,13 +681,13 @@
 
                 <div class="pay-box">
                     <strong>📱 MobilePay</strong> (40 63 33 10)<br>
-                    <span style="font-size: 0.68rem; color: var(--airbnb-gray);" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
+                    <span style="font-size: 0.7rem; color: var(--airbnb-gray);" id="copyStatus">Husk navn og "Solkrogen" i tekstfeltet!</span>
                     <button class="pay-btn" onclick="copyMobilePayNumber()">Kopier nummer & åbn MobilePay</button>
                 </div>
 
                 <div class="pay-box">
                     <strong>🏦 Bankoverførsel</strong> (Reg: 2128 - Konto: 5369327617)<br>
-                    <span style="font-size: 0.68rem; color: var(--airbnb-gray);">Husk at skrive navn og "Solkrogen".</span>
+                    <span style="font-size: 0.7rem; color: var(--airbnb-gray);">Husk at skrive navn og "Solkrogen".</span>
                 </div>
             </div>
 
@@ -742,7 +740,7 @@
             <label for="endDate">Til dato</label>
             <input type="date" id="endDate" value="2026-09-07" onchange="checkBookingType()">
 
-            <p id="bookingNotice" style="font-size: 0.75rem; color: #374151; background: #f7f7f7; padding: 10px; border-radius: 10px; margin-top: 10px; border: 1px solid var(--airbnb-border); font-weight: 500;"></p>
+            <p id="bookingNotice" style="font-size: 0.8rem; color: #374151; background: #f7f7f7; padding: 12px; border-radius: 12px; margin-top: 12px; border: 1px solid var(--airbnb-border); font-weight: 500;"></p>
 
             <button id="actionBtn" class="btn btn-book" onclick="submitBooking()">Bekræft booking</button>
             <button class="btn btn-close" onclick="closeModal()">Annuller</button>
@@ -967,7 +965,7 @@
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
                     <div>
-                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 5px 8px; font-size:0.68rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
+                        ${(b.status === 'request' && canApprove) ? `<button class="btn-book" style="padding: 6px 10px; font-size:0.7rem; margin-right: 4px;" onclick="approveRequest(${index})">Godkend</button>` : ''}
                         <button class="btn-delete" onclick="deleteBooking(${index})">Slet</button>
                     </div>
                 </div>
@@ -1081,6 +1079,7 @@
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(name + 'View').classList.add('active');
             btn.classList.add('active');
+            window.scrollTo(0, 0);
         }
 
         function openModal() {
