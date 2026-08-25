@@ -933,8 +933,9 @@
         let isCurrentRequest = false;
         let canApprove = false;
 
-        // Fælles cloud-lagring via JSONBin (offentlig bin til solkrogen)
-        const BIN_ID = "678e7f9de41b4d34e46da8a2"; 
+        // Dine rigtige JSONBin.io oplysninger
+        const BIN_ID = "6a8ded98f5f4af5e29418956"; 
+        const MASTER_KEY = "$2a$10$CHoW6gL7DD0kvn0Xf0IPRO2p6j26vhr3onNpc3BfxzavlZFAoF4Ty";
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
         const familyAdmins = {
@@ -950,9 +951,9 @@
                     canApprove = true;
                 }
 
-                // Hent fra fælles sky
+                // Hent fra din JSONBin-database
                 const res = await fetch(API_URL + "/latest", {
-                    headers: { "X-Master-Key": "$2a$10$vU8rE7v6X8y2h8r7xG2aWu4g9w6B7g9V5x3V9V9V9V9V9V9V9V9V9" } // Offentlig læsenøgle
+                    headers: { "X-Master-Key": MASTER_KEY }
                 });
                 if(res.ok) {
                     const json = await res.json();
@@ -962,9 +963,7 @@
                     }
                 }
             } catch (e) {
-                console.error("Kunne ikke hente fra skyen, bruger lokal cache", e);
-                const savedBookings = localStorage.getItem('solkrogen_bookings');
-                if (savedBookings) existingBookings = JSON.parse(savedBookings);
+                console.error("Kunne ikke hente fra skyen", e);
             }
             renderCalendar();
             renderBookingsList();
@@ -975,16 +974,12 @@
 
         async function saveDataToCloud() {
             try {
-                // Gem lokalt som backup
-                localStorage.setItem('solkrogen_bookings', JSON.stringify(existingBookings));
-                localStorage.setItem('solkrogen_notes', JSON.stringify(existingNotes));
-
-                // Gem i fælles sky
+                // Gem i din JSONBin-database
                 await fetch(API_URL, {
                     method: 'PUT',
                     headers: {
                         "Content-Type": "application/json",
-                        "X-Master-Key": "$2a$10$vU8rE7v6X8y2h8r7xG2aWu4g9w6B7g9V5x3V9V9V9V9V9V9V9V9V9"
+                        "X-Master-Key": MASTER_KEY
                     },
                     body: JSON.stringify({ bookings: existingBookings, notes: existingNotes })
                 });
