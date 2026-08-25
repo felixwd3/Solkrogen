@@ -313,6 +313,48 @@
             margin-bottom: 12px;
         }
 
+        /* FOLD-UD MENUTYPE */
+        .restaurant-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 10px 0;
+        }
+        .restaurant-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .restaurant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+        .restaurant-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            font-size: 0.75rem;
+            color: #4b5563;
+            background: #f9fafb;
+            padding: 0 10px;
+            border-radius: 8px;
+            margin-top: 0px;
+        }
+        .restaurant-item.open .restaurant-details {
+            max-height: 150px;
+            padding: 8px 10px;
+            margin-top: 8px;
+        }
+        .menu-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--airbnb-red);
+            font-size: 0.7rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 2px 6px;
+            margin-right: 4px;
+        }
+
         .weather-card {
             background: linear-gradient(135deg, #2b2b2b 0%, #111111 100%);
             border-radius: 16px;
@@ -714,29 +756,71 @@
                     <div class="weather-temp" id="weatherTemp">--°C</div>
                 </div>
 
-                <div class="checklist-category" style="margin-top: 0;">Spisesteder & Indkøb i nærheden</div>
+                <div class="checklist-category" style="margin-top: 0;">Spisesteder & Menukort</div>
                 <div class="info-card">
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>Restaurant Margeritten (Allinge)</strong>
-                            <span>Hyggelig restaurant på Kirkepladsen</span>
+                    
+                    <!-- Basta Pizza -->
+                    <div class="restaurant-item" id="rest-1">
+                        <div class="restaurant-header">
+                            <div class="contact-info">
+                                <strong>Basta Pizza (Sandvig)</strong>
+                                <span>Sprøde italienske pizzaer & vand</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <button class="menu-toggle-btn" onclick="toggleMenu('rest-1')">📋 Menu</button>
+                                <a href="tel:56480000" class="btn-call">📞 Ring</a>
+                            </div>
                         </div>
-                        <a href="tel:56482209" class="btn-call">📞 Ring</a>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>Restaurant Sommer (Allinge Havn)</strong>
-                            <span>God mad og udsigt ved havnen</span>
+                        <div class="restaurant-details">
+                            <strong>Udvalg & Priser:</strong><br>
+                            • Margherita: 85 kr.<br>
+                            • Pepperoni: 105 kr.<br>
+                            • Kartoffel / Rosemary (hvid pizza): 120 kr.<br>
+                            *Mulighed for takeaway.
                         </div>
-                        <a href="tel:56484849" class="btn-call">📞 Ring</a>
                     </div>
-                    <div class="contact-item">
-                        <div class="contact-info">
-                            <strong>SuperBrugsen Allinge</strong>
-                            <span>Nærmeste indkøbsmulighed</span>
+
+                    <!-- Brødre i Tegn -->
+                    <div class="restaurant-item" id="rest-2" style="margin-top:8px;">
+                        <div class="restaurant-header">
+                            <div class="contact-info">
+                                <strong>Brødre (Allinge / Tegn)</strong>
+                                <span>Lækre burgere, sandwiches & kaffe</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <button class="menu-toggle-btn" onclick="toggleMenu('rest-2')">📋 Menu</button>
+                                <a href="tel:56481122" class="btn-call">📞 Ring</a>
+                            </div>
                         </div>
-                        <a href="tel:56480024" class="btn-call">📞 Ring</a>
+                        <div class="restaurant-details">
+                            <strong>Udvalg & Priser:</strong><br>
+                            • Klassisk Burger med fritter: 145 kr.<br>
+                            • Smagsfuld Veggie-burger: 135 kr.<br>
+                            • Hjemmelavet sandwich: 95 kr.<br>
+                            *Perfekt til frokost eller nem aftensmad.
+                        </div>
                     </div>
+
+                    <!-- Restaurant Margeritten -->
+                    <div class="restaurant-item" id="rest-3" style="margin-top:8px;">
+                        <div class="restaurant-header">
+                            <div class="contact-info">
+                                <strong>Restaurant Margeritten (Allinge)</strong>
+                                <span>Klassisk dansk mad & fiskeretter</span>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:4px;">
+                                <button class="menu-toggle-btn" onclick="toggleMenu('rest-3')">📋 Menu</button>
+                                <a href="tel:56482209" class="btn-call">📞 Ring</a>
+                            </div>
+                        </div>
+                        <div class="restaurant-details">
+                            <strong>Udvalg & Priser:</strong><br>
+                            • Stjerneskud med frisk fisk: 185 kr.<br>
+                            • Wienerschnitzel: 210 kr.<br>
+                            • Dagens bornholmske fiskeret: Afh. af sæson.
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="checklist-category">Lokale Håndværkere & Nødopkald</div>
@@ -894,6 +978,12 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW fejl', err));
             });
+        }
+
+        // Funktion til at folde menuer ud på info-siden
+        function toggleMenu(id) {
+            const item = document.getElementById(id);
+            item.classList.toggle('open');
         }
 
         let currentYear = 2026;
