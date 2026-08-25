@@ -1053,7 +1053,6 @@
         function isDateBooked(year, month, day) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
             const booking = existingBookings.find(b => dateStr >= b.start_date && dateStr <= b.end_date);
-            // Ignorer afviste bookinger så de ikke blokerer kalenderen
             if (booking && booking.status === 'rejected') return null;
             return booking;
         }
@@ -1310,10 +1309,10 @@
         }
 
         function submitBooking() {
-            const userName = document.getElementById('userName'].value;
-            const userBranch = document.getElementById('userBranch'].value;
-            const startDate = document.getElementById('startDate'].value;
-            const endDate = document.getElementById('endDate'].value;
+            const userName = document.getElementById('userName').value;
+            const userBranch = document.getElementById('userBranch').value;
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
@@ -1327,7 +1326,7 @@
             existingBookings.push(newBooking);
             saveBookings();
             closeModal();
-            document.getElementById('userName'].value = '';
+            document.getElementById('userName').value = '';
 
             if(status === 'request') {
                 const currentBaseURL = window.location.origin + window.location.pathname;
