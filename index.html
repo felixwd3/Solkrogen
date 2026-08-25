@@ -871,6 +871,9 @@
             <label for="userName">Dit navn</label>
             <input type="text" id="userName" placeholder="F.eks. Felix">
 
+            <label for="userPhone">Dit telefonnummer (til bekræftelse)</label>
+            <input type="text" id="userPhone" placeholder="F.eks. 12345678">
+
             <label for="userBranch">Hvilken familiegruppe tilhører du?</label>
             <select id="userBranch" onchange="checkBookingType()">
                 <option value="Lene">Lenes familie</option>
@@ -1184,15 +1187,31 @@
         }
 
         function approveRequest(index) {
-            existingBookings[index].status = 'confirmed';
+            const b = existingBookings[index];
+            b.status = 'confirmed';
             saveBookings();
-            alert("Anmodningen er godkendt!");
+            
+            // Send svar-SMS til bookeren hvis der er angivet et telefonnummer
+            if (b.phone) {
+                const smsText = encodeURIComponent(`Hej ${b.user_name}! Din booking af Solkrogen fra ${b.start_date} til ${b.end_date} er blevet GODKENDT ✅ Mvh. Solkrogen`);
+                window.location.href = `sms:${b.phone}?body=${smsText}`;
+            } else {
+                alert("Anmodningen er godkendt!");
+            }
         }
 
         function rejectRequest(index) {
-            existingBookings[index].status = 'rejected';
+            const b = existingBookings[index];
+            b.status = 'rejected';
             saveBookings();
-            alert("Anmodningen er afvist.");
+
+            // Send svar-SMS til bookeren hvis der er angivet et telefonnummer
+            if (b.phone) {
+                const smsText = encodeURIComponent(`Hej ${b.user_name}! Desværre, din anmodning om at låne Solkrogen fra ${b.start_date} til ${b.end_date} er blevet AFVIST ❌ Mvh. Solkrogen`);
+                window.location.href = `sms:${b.phone}?body=${smsText}`;
+            } else {
+                alert("Anmodningen er afvist.");
+            }
         }
 
         function deleteBooking(index) {
@@ -1310,6 +1329,7 @@
 
         function submitBooking() {
             const userName = document.getElementById('userName').value;
+            const userPhone = document.getElementById('userPhone').value;
             const userBranch = document.getElementById('userBranch').value;
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
@@ -1321,12 +1341,13 @@
             const startD = new Date(startDate);
             const ownerInfo = getOwnerForDate(startD.getFullYear(), startD.getMonth(), startD.getDate());
             
-            const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate, status: status };
+            const newBooking = { user_name: userName, phone: userPhone, branch: userBranch, start_date: startDate, end_date: endDate, status: status };
             
             existingBookings.push(newBooking);
             saveBookings();
             closeModal();
             document.getElementById('userName').value = '';
+            document.getElementById('userPhone').value = '';
 
             if(status === 'request') {
                 const currentBaseURL = window.location.origin + window.location.pathname;
@@ -1334,7 +1355,7 @@
                 
                 const responsibleAdmin = familyAdmins[ownerInfo.branch] || { phone: "30690738" };
                 
-                const smsText = encodeURIComponent(`Hej! ${userName} (${userBranch} familie) har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Godkend/afvis her: ${approvalLink}`);
+                const smsText = encodeURIComponent(`Hej! ${userName} (${userBranch} familie - tlf: ${userPhone}) har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Godkend/afvis her: ${approvalLink}`);
                 window.location.href = `sms:${responsibleAdmin.phone}?body=${smsText}`;
             } else {
                 alert(`Booking gennemført for ${userName}!`);
