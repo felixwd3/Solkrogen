@@ -542,10 +542,10 @@
                 <h1>Info & Kontakt</h1>
                 <p class="subtitle">Praktiske oplysninger & nødtjenester</p>
 
-                <!-- VEJR WIDGET FOR SANDVIG -->
+                <!-- VEJR WIDGET FOR ALLINGE / SANKÅS -->
                 <div class="weather-card">
                     <div class="weather-info">
-                        <h3>🌤️ Vejret i Sandvig</h3>
+                        <h3>🌤️ Vejret i Allinge / Sankås</h3>
                         <p id="weatherWind">Henter vejrdata...</p>
                         <a href="https://www.dmi.dk" target="_blank" style="font-size:0.75rem; color:#1864ab; font-weight:600; text-decoration:none;">Se DMI prognose ›</a>
                     </div>
@@ -606,23 +606,28 @@
             <!-- BETALING VIEW -->
             <div id="payView" class="view-section">
                 <h1>Betaling</h1>
-                <p class="subtitle">Afregning for ophold & forbrug</p>
+                <p class="subtitle">Husk at betale for opholdet</p>
+
+                <div class="pay-box" style="background: #eebbcb33; border-color: #f06595;">
+                    <strong style="color: #c92a2a; font-size: 1.05rem;">💰 Pris for ophold:</strong><br>
+                    <span style="font-size: 1.3rem; font-weight: bold; color: #212529;">75,- (150,-) kr. pr. næse pr. nat</span>
+                </div>
 
                 <div class="pay-box">
                     <strong>📱 MobilePay</strong><br>
-                    Betaling for ophold, el eller fællesomkostninger sendes til husets fællesnummer:<br><br>
-                    <span style="font-size: 1.2rem; font-weight: bold; color: #2b8a3e;">#123456 (Solkrogen)</span><br>
-                    <em>Husk at skrive dit navn og datoer i kommentarfeltet!</em>
+                    Send betalingen direkte til:<br><br>
+                    <span style="font-size: 1.2rem; font-weight: bold; color: #2b8a3e;">40 63 33 10</span><br>
+                    <em>Husk at skrive navn og "Solkrogen" i tekstfeltet!</em>
                     
                     <a href="https://mobilepay.dk" target="_blank" class="pay-btn">Åbn MobilePay</a>
                 </div>
 
                 <div class="pay-box">
                     <strong>🏦 Bankoverførsel</strong><br>
-                    Ønsker du at overføre via netbank:<br>
-                    <strong>Reg. nr:</strong> 1234<br>
-                    <strong>Konto nr:</strong> 1234567890<br>
-                    Husk at mærke overførslen med navn.
+                    Eller overfør via netbank:<br>
+                    <strong>Reg. nr:</strong> 2128<br>
+                    <strong>Konto nr:</strong> 5369327617<br>
+                    <em>Husk at skrive navn og "Solkrogen" i tekstfeltet.</em>
                 </div>
             </div>
 
@@ -745,8 +750,8 @@
 
         async function fetchWeather() {
             try {
-                // Henter vejr for Sandvig/Allinge koordinater
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.2833&longitude=14.7797&current_weather=true&timezone=Europe%2FCopenhagen');
+                // Koordinater for Allinge / Sankås (Bornholm): ca. 55.2750, 14.8050
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.2750&longitude=14.8050&current_weather=true&timezone=Europe%2FCopenhagen');
                 const data = await res.json();
                 if (data && data.current_weather) {
                     const temp = Math.round(data.current_weather.temperature);
