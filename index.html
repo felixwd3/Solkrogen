@@ -846,11 +846,11 @@
             <label for="userName">Dit navn</label>
             <input type="text" id="userName" placeholder="F.eks. Felix">
 
-            <label for="userBranch">Hvilken gren tilhører du?</label>
+            <label for="userBranch">Hvilken familiegruppe tilhører du?</label>
             <select id="userBranch" onchange="checkBookingType()">
-                <option value="Lene">Lenes gren</option>
-                <option value="Erik">Eriks gren</option>
-                <option value="Anne">Annes gren</option>
+                <option value="Lene">Lenes familie</option>
+                <option value="Erik">Eriks familie</option>
+                <option value="Anne">Annes familie</option>
             </select>
 
             <label for="startDate">Fra dato</label>
@@ -904,6 +904,13 @@
         let existingNotes = [];
         let isCurrentRequest = false;
         let canApprove = false;
+
+        // Alle anmodninger om lån går nu direkte til dit nummer (30690738)
+        const familyAdmins = {
+            "Lene": { name: "Felix", phone: "30690738" },
+            "Erik": { name: "Felix", phone: "30690738" },
+            "Anne": { name: "Felix", phone: "30690738" }
+        };
 
         function loadBookings() {
             try {
@@ -1082,7 +1089,7 @@
             container.innerHTML = existingBookings.map((b, index) => `
                 <div class="booking-card">
                     <div>
-                        <strong>${b.user_name}</strong> (${b.branch || 'Ukendt'}) - ${b.status === 'request' ? '⏳ <em>Afventer lån</em>' : '✅ <em>Bekræftet</em>'}<br>
+                        <strong>${b.user_name}</strong> (${b.branch} familie) - ${b.status === 'request' ? '⏳ <em>Afventer lån</em>' : '✅ <em>Bekræftet</em>'}<br>
                         📅 ${b.start_date} til ${b.end_date}
                     </div>
                     <div>
@@ -1236,11 +1243,13 @@
             const btn = document.getElementById('actionBtn');
 
             let crossesOther = false;
+            let targetOwnerBranch = "";
             let current = new Date(start);
             while(current <= end) {
                 const owner = getOwnerForDate(current.getFullYear(), current.getMonth(), current.getDate());
                 if(owner.branch !== selectedBranch) {
                     crossesOther = true;
+                    targetOwnerBranch = owner.branch;
                 }
                 current.setDate(current.getDate() + 1);
             }
@@ -1248,11 +1257,11 @@
             isCurrentRequest = crossesOther;
 
             if(crossesOther) {
-                notice.innerHTML = "⚠️ Perioden overlapper med en anden grens uger. Dette oprettes som en <strong>anmodning om lån</strong>.";
+                notice.innerHTML = `⚠️ Perioden overlapper med <strong>${targetOwnerBranch}s familie</strong>. Dette oprettes som en anmodning, og der sendes automatisk besked til godkendelse.`;
                 btn.innerText = "Send anmodning";
                 btn.className = "btn btn-request";
             } else {
-                notice.innerHTML = "✅ Perioden ligger i din egen grens uger. Bookes med det samme.";
+                notice.innerHTML = "✅ Perioden ligger i din egen familiegruppe. Bookes med det samme.";
                 btn.innerText = "Bekræft booking";
                 btn.className = "btn btn-book";
             }
@@ -1267,6 +1276,10 @@
             if(!userName) { alert("Indtast venligst dit navn."); return; }
 
             const status = isCurrentRequest ? 'request' : 'confirmed';
+            
+            const startD = new Date(startDate);
+            const ownerInfo = getOwnerForDate(startD.getFullYear(), startD.getMonth(), startD.getDate());
+            
             const newBooking = { user_name: userName, branch: userBranch, start_date: startDate, end_date: endDate, status: status };
             
             existingBookings.push(newBooking);
@@ -1278,8 +1291,10 @@
                 const currentBaseURL = window.location.origin + window.location.pathname;
                 const approvalLink = `${currentBaseURL}?godkend=ja`;
                 
-                const smsText = encodeURIComponent(`Hej! ${userName} har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Klik her for at godkende: ${approvalLink}`);
-                window.location.href = `sms:?body=${smsText}`;
+                const responsibleAdmin = familyAdmins[ownerInfo.branch] || { phone: "30690738" };
+                
+                const smsText = encodeURIComponent(`Hej! ${userName} (${userBranch} familie) har anmodet om at låne Solkrogen fra ${startDate} til ${endDate}. Godkend her: ${approvalLink}`);
+                window.location.href = `sms:${responsibleAdmin.phone}?body=${smsText}`;
             } else {
                 alert(`Booking gennemført for ${userName}!`);
             }
