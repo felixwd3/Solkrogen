@@ -869,10 +869,10 @@
             <h3>Opret booking eller lån</h3>
             
             <label for="userName">Dit navn</label>
-            <input type="text" id="userName" placeholder="F.eks. Sofie">
+            <input type="text" id="userName" placeholder="F.eks. Anna">
 
             <label for="userPhone">Dit telefonnummer (til bekræftelse)</label>
-            <input type="text" id="userPhone" placeholder="F.eks. 53564264">
+            <input type="text" id="userPhone" placeholder="F.eks. 12345678">
 
             <label for="userBranch">Hvilken familiegruppe tilhører du?</label>
             <select id="userBranch" onchange="checkBookingType()">
@@ -900,7 +900,7 @@
             <h3>Ny besked / hittegods</h3>
             
             <label for="noteAuthor">Dit navn</label>
-            <input type="text" id="noteAuthor" placeholder="F.eks. Felix">
+            <input type="text" id="noteAuthor" placeholder="F.eks. Anna">
 
             <label for="noteType">Type</label>
             <select id="noteType">
@@ -939,9 +939,9 @@
         const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
         const familyAdmins = {
-            "Lene": { name: "Felix", phone: "30690738" },
-            "Erik": { name: "Felix", phone: "30690738" },
-            "Anne": { name: "Felix", phone: "30690738" }
+            "Lene": { name: "Admin", phone: "30690738" },
+            "Erik": { name: "Admin", phone: "30690738" },
+            "Anne": { name: "Admin", phone: "30690738" }
         };
 
         async function loadData() {
@@ -1338,7 +1338,7 @@
             const userName = document.getElementById('userName').value;
             const userPhone = document.getElementById('userPhone').value;
             const userBranch = document.getElementById('userBranch').value;
-            const startDate = document.getElementById('startDate').value;
+            const startDate = document.getElementById('startDate'].value;
             const endDate = document.getElementById('endDate').value;
 
             if(!userName) { alert("Indtast venligst dit navn."); return; }
