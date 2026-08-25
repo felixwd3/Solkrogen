@@ -324,6 +324,32 @@
             color: #495057;
         }
 
+        .calc-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .calc-field {
+            flex: 1;
+        }
+
+        .calc-field label {
+            margin-top: 0;
+            font-size: 0.75rem;
+        }
+
+        .calc-result {
+            margin-top: 12px;
+            background: #e6fcf5;
+            border: 1px solid #12b886;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            color: #0ca678;
+            font-weight: 600;
+        }
+
         .pay-btn {
             display: block;
             width: 100%;
@@ -336,6 +362,9 @@
             font-weight: 600;
             margin-top: 12px;
             box-sizing: border-box;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
         }
 
         .note-card {
@@ -455,7 +484,7 @@
             letter-spacing: 0.5px;
         }
 
-        input[type="text"], input[type="date"], textarea, select {
+        input[type="text"], input[type="date"], input[type="number"], textarea, select {
             width: 100%;
             padding: 12px;
             margin: 6px 0 4px 0;
@@ -609,8 +638,27 @@
                 <p class="subtitle">Husk at betale for opholdet</p>
 
                 <div class="pay-box" style="background: #eebbcb33; border-color: #f06595;">
-                    <strong style="color: #c92a2a; font-size: 1.05rem;">💰 Pris for ophold:</strong><br>
-                    <span style="font-size: 1.3rem; font-weight: bold; color: #212529;">75,- (150,-) kr. pr. næse pr. nat</span>
+                    <strong style="color: #c92a2a; font-size: 1.05rem;">💰 Priser for ophold:</strong><br>
+                    <span style="font-size: 0.95rem; color: #212529;">• Familie: <strong>75 kr.</strong> pr. næse pr. nat</span><br>
+                    <span style="font-size: 0.95rem; color: #212529;">• Ikke-familiemedlemmer: <strong>150 kr.</strong> pr. næse pr. nat</span>
+                </div>
+
+                <!-- PRISBEREGNER -->
+                <div class="pay-box" style="background: #f8f9fa; border-color: #dee2e6;">
+                    <strong>🧮 Prisberegner</strong>
+                    <div class="calc-row">
+                        <div class="calc-field">
+                            <label for="calcPersons">Antal personer</label>
+                            <input type="number" id="calcPersons" value="2" min="1" max="20" oninput="calculatePrice()">
+                        </div>
+                        <div class="calc-field">
+                            <label for="calcNights">Antal nætter</label>
+                            <input type="number" id="calcNights" value="7" min="1" max="90" oninput="calculatePrice()">
+                        </div>
+                    </div>
+                    <div class="calc-result" id="calcResultText">
+                        Beregner...
+                    </div>
                 </div>
 
                 <div class="pay-box">
@@ -619,7 +667,7 @@
                     <span style="font-size: 1.2rem; font-weight: bold; color: #2b8a3e;">40 63 33 10</span><br>
                     <em>Husk at skrive navn og "Solkrogen" i tekstfeltet!</em>
                     
-                    <a href="https://mobilepay.dk" target="_blank" class="pay-btn">Åbn MobilePay</a>
+                    <button class="pay-btn" onclick="openMobilePay()">Åbn MobilePay app</button>
                 </div>
 
                 <div class="pay-box">
@@ -746,11 +794,31 @@
             renderBookingsList();
             renderNotes();
             fetchWeather();
+            calculatePrice();
+        }
+
+        function calculatePrice() {
+            const persons = parseInt(document.getElementById('calcPersons').value) || 0;
+            const nights = parseInt(document.getElementById('calcNights').value) || 0;
+
+            const familyPrice = persons * nights * 75;
+            const guestPrice = persons * nights * 150;
+
+            document.getElementById('calcResultText').innerHTML = `
+                • Familie (75 kr.): <strong>${familyPrice} kr.</strong><br>
+                • Gæst / Ikke-familiemedlem (150 kr.): <strong>${guestPrice} kr.</strong>
+            `;
+        }
+
+        function openMobilePay() {
+            const phone = "40633310";
+            const comment = encodeURIComponent("Solkrogen - [Navn]");
+            const mobilePayAppUrl = `mobilepay://send?phone=${phone}&comment=${comment}`;
+            window.location.href = mobilePayAppUrl;
         }
 
         async function fetchWeather() {
             try {
-                // Koordinater for Allinge / Sankås (Bornholm): ca. 55.2750, 14.8050
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=55.2750&longitude=14.8050&current_weather=true&timezone=Europe%2FCopenhagen');
                 const data = await res.json();
                 if (data && data.current_weather) {
